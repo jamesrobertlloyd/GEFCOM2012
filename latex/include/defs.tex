@@ -1,0 +1,349 @@
+\theoremstyle{plain}
+
+\def\ie{i.e.\ }
+\def\eg{e.g.\ }
+\def\indicator{\mathbb{I}}
+\def\mean#1{\mathbb{E}[#1]}
+\def\bigmean#1{\mathbb{E}\bigl[#1\bigr]}
+\def\Bigmean#1{\mathbb{E}\Bigl[#1\Bigr]}
+\def\cyl{\mathcal{Z}}
+\def\eqae{=_{\mbox{\tiny a.e.}}}
+\def\wrt{w.r.t.\ }
+\def\ae{a.e.\ }
+\def\equas{=_{\mbox{\tiny a.s.}}}
+\def\equae{=_{\mbox{\tiny a.e.}}}
+\def\iid{i.i.d.\ }
+\def\Iid{I.i.d.\ }
+%\def\inclusion{\jmath}
+\def\inclusion{\mathcal{J}}
+\def\inclusionX{\inclusion_{\xspace}}
+\def\wstar{weak$^{\ast}$ }
+% Symmetric difference
+\def\symmdiff{\!\vartriangle\!}
+
+
+% Indices
+
+\def\indI{\mbox{\tiny I}}
+\def\indJ{\mbox{\tiny J}}
+\def\indK{\mbox{\tiny K}}
+\def\indJI{\mbox{\tiny J$\setminus$I}}
+\def\indE{\mbox{\tiny E}}
+\def\indF{\mbox{\tiny F}}
+\def\indD{\mbox{\tiny D}}
+\def\indi{\mbox{\tiny{\{i\}}}}
+\def\ind#1{\mbox{\tiny #1}}
+\def\power{\mathcal{F}}
+\def\powerD{\power(D)}
+\def\powerE{\power(E)}
+\def\powerL{\power(L)}
+\def\parts{\mathcal{H}}
+\def\partsQ{\parts(\mathcal{Q})}
+\def\partsn{\parts[n]}
+\def\partsN{\parts_{\infty}(\mathbb{N})}
+
+% Spaces
+
+\def\abstspace{\Omega}
+\def\xspace{\mathcal{X}}
+\def\yspace{\mathcal{Y}}
+\def\tspace{\mathcal{T}}
+\def\xspaceI{\xspace_{\indI}}
+\def\xspaceJ{\xspace_{\indJ}}
+\def\xspaceD{\xspace_{\indD}}
+\def\xspaceE{\xspace_{\indE}}
+\def\tspaceI{\tspace_{\indI}}
+\def\tspaceJ{\tspace_{\indJ}}
+\def\tspaceD{\tspace_{\indD}}
+\def\tspaceE{\tspace_{\indE}}
+\def\txspace{\tilde{\xspace}}
+\def\yspaceI{\yspace_{\indI}}
+\def\yspaceJ{\yspace_{\indJ}}
+\def\yspaceD{\yspace_{\indD}}
+\def\yspaceE{\yspace_{\indE}}
+\def\txspace{\tilde{\xspace}}
+\def\ttspace{\tilde{\tspace}}
+\def\xI{x_{\indI}}
+\def\xJ{x_{\indJ}}
+\def\xD{x_{\indD}}
+\def\xE{x_{\indE}}
+\def\tImage{\Gamma}
+\def\simp{\triangle}
+\def\simpI{\simp_{\indI}}
+\def\simpJ{\simp_{\indJ}}
+
+\def\AI{A_{\indI}}
+\def\AJ{A_{\indJ}}
+\def\AD{A_{\indD}}
+\def\AE{A_{\indE}}
+
+
+%Space of Prob Measures
+\def\pMeas{M}
+%Space of Contents
+\def\fMeas{N}
+%Space of cont fcts
+\def\cfspace{C}
+%Hilbert space
+\def\hilbert{\mathcal{L}^2}
+
+
+\def\borelV{\borel_{V}}
+
+% Set systems
+
+\def\borel{\mathcal{B}}
+\def\top{\mbox{Top}}
+
+\def\borelI{\borel_{\indI}}
+\def\borelJ{\borel_{\indJ}}
+\def\borelD{\borel_{\indD}}
+\def\borelE{\borel_{\indE}}
+\def\tborel{\tilde{\borel}}
+\def\abstfield{\mathcal{A}}
+\def\field{\mathcal{C}}
+\def\fieldI{\field_{\indI}}
+\def\fieldJ{\field_{\indJ}}
+\def\fieldK{\field_{\indK}}
+\def\fieldD{\field_{\indD}}
+\def\fieldE{\field_{\indE}}
+\def\tfield{\tilde{\mathcal{C}}}
+\def\Sfield{\mathcal{S}}
+\def\SfieldI{\mathcal{S}_{\indI}}
+\def\SfieldJ{\mathcal{S}_{\indJ}}
+\def\SfieldD{\mathcal{S}_{\indD}}
+\def\tSfield{\tilde{\mathcal{S}}}
+\def\borelx{\borel_x}
+\def\tborelx{\tborel_x}
+\def\borelgamma{\tborel_{\tImage}}
+%\def\borelth{\borel_{\theta}}
+\def\borely{\borel_{y}}
+%\def\borelT{\borel_t}
+\def\borelT{\borel_{\tspace}}
+\def\borelS{\borel_s}
+\def\topI{\top_{\indI}}
+\def\topJ{\top_{\indJ}}
+\def\topD{\top_{\indD}}
+\def\topE{\top_{\indE}}
+\def\topV{\top_V}
+\def\topws{\top_{\text{ws}}}
+\def\topcc{\top_{\text{c}}}
+\def\borelXI{\borel(\xspaceI)}
+\def\borelXD{\borel(\xspaceD)}
+\def\tborelX{\borel(\txspace)}
+\def\borelTI{\borel(\tspaceI)}
+\def\borelTD{\borel(\tspaceD)}
+\def\tborelT{\borel(\ttspace)}
+
+
+% Maps
+
+\def\XI{X_{\indI}}
+\def\Xi{X_{\ind{i}}}
+\def\Xj{X_{\ind{j}}}
+\def\ThetaI{\Theta_{\indI}}
+\def\XJ{X_{\indJ}}
+\def\ThetaJ{\Theta_{\indJ}}
+\def\XD{X_{\indD}}
+\def\ThetaD{\Theta_{\indD}}
+\def\XE{X_{\indE}}
+\def\ThetaE{\Theta_{\indE}}
+\def\tX{\tilde{X}}
+\def\tTheta{\tilde{\Theta}}
+
+\def\SI{S_{\indI}}
+\def\TI{T_{\indI}}
+
+\def\rest{\phi}
+\def\restD{\rest_{\indD}}
+\def\restI{\rest_{\indI}}
+\def\restJ{\rest_{\indJ}}
+\def\restDI{\rest^{\indD}_{\indI}}
+\def\inclusionD{\inclusion_{\indD}}
+\def\inclusionE{\inclusion_{\indE}}
+\def\projector{\mbox{pr}}
+\def\projectorD{\projector_{\indD}}
+\def\projectorI{\projector_{\indI}}
+\def\projectorJI{\pi_{\indJ\indI}}
+\def\indicator{\mathbb{I}}
+
+% Projective systems
+
+\def\po{\preceq}
+\def\famD#1{{\lbrace #1 \rbrace}_{\indD}}
+\def\famE#1{{\lbrace #1 \rbrace}_{\ind{I$\in$}\indE}}
+\def\fJI{f_{\indJ\indI}}
+\def\fKI{f_{\indK\indI}}
+\def\fKJ{f_{\indK\indJ}}
+\def\fII{f_{\indI\indI}}
+\def\fI{f_{\indI}}
+\def\fJ{f_{\indJ}}
+\def\fK{f_{\indK}}
+\def\fD{f_{\indD}}
+\def\fDI{f^{\indD}_{\indI}}
+\def\fDK{f^{\indD}_{\indK}}
+\def\gJI{g_{\indJ\indI}}
+\def\gI{g_{\indI}}
+\def\gJ{g_{\indJ}}
+\def\gD{g_{\indD}}
+\def\hJI{h_{\indJ\indI}}
+\def\hI{h_{\indI}}
+\def\hJ{h_{\indJ}}
+\def\hE{h_{\indE}}
+\def\plim{\varprojlim}
+
+% Measure and Conditionals
+
+\def\abstmeasure{\mathbb{P}}
+\def\P{P}
+\def\PI{P_{\indI}}
+\def\PJ{P_{\indJ}}
+\def\PD{P_{\indD}}
+\def\PE{P_{\indE}}
+\def\PX{P_{\mbox{X}}}
+\def\PTh{P_{\mbox{\Theta}}}
+\def\PXI{P_{\XI}}
+\def\PThI{P_{\mbox{\Theta}}}
+\def\PXJ{P_{\mbox{X}}}
+\def\PThJ{P_{\mbox{\Theta}}}
+\def\PXD{P_{\mbox{X}}}
+\def\PThD{P_{\mbox{\Theta}}}
+\def\PXE{P_{\mbox{X}}}
+\def\PThE{P_{\mbox{\Theta}}}
+\def\tP{\tilde{P}}
+\def\tPX{\tilde{P}_X}
+\def\tPTh{\tilde{P}_{\Theta}}
+
+
+
+
+
+
+
+\def\SI{S_{\indI}}
+\def\SJ{S_{\indJ}}
+
+\def\tk{\tilde{k}}
+\def\kI{k_{\indI}}
+
+\def\postkernel{k}
+\def\indctr{\mathbbm{1}}
+\def\sp#1{\left<#1\right>}
+
+
+%Mallows
+\def\Sr{\mathbb{S}_r}
+\def\Sinf{\mathbb{S}_{\infty}}
+\def\Sbar{\bar{\mathbb{S}}}
+\def\DP#1{\mbox{DP}\left( #1 \right)}
+\def\GP#1{\mbox{GP}\left( #1 \right)}
+\def\x{\mathbf{x}}
+\def\y{\mathbf{y}}
+
+
+
+\def\tyspace{\tilde{\yspace}}
+\def\tF{\tilde{F}}
+\def\tT{\tilde{T}}
+\def\tmodel{\tilde{\model}}
+\def\tnu{\tilde{\nu}}
+
+
+\def\PTheta{P^{\theta}}
+\def\FTheta{F^{\theta}}
+\def\TTheta{T^{\theta}}
+\def\borelY{\borel_{\yspace}}
+
+\def\PX{P^{x}}
+\def\PXI{\PX_{\indI}}
+\def\PXJ{\PX_{\indJ}}
+\def\PXD{\PX_{\indD}}
+\def\PThetaI{\PTheta_{\indI}}
+\def\PThetaD{\PTheta_{\indD}}
+\def\YI{Y_{\indI}}
+\def\YJ{Y_{\indJ}}
+\def\YD{Y_{\indD}}
+\def\Tn{T^{(n)}}
+\def\indexspace{\mathcal{W}}
+\def\tyspace{\tilde{\yspace}}
+\def\tY{\tilde{Y}}
+\def\inclusionT{\inclusion_{\tspace}}
+\def\tPTheta{\tilde{P}^{\theta}}
+\def\tTn{\tilde{T}^{(n)}}
+\def\inclusionY{\inclusion_{\yspace}}
+
+\def\tyspace{\tilde{\yspace}}
+\def\tF{\tilde{F}}
+\def\tT{\tilde{T}}
+\def\tmodel{\tilde{\model}}
+\def\tnu{\tilde{\nu}}
+\def\tOmega{\tilde{\abstspace}}
+\def\tabstmeasure{\tilde{\abstmeasure}}
+\def\model{\mathcal{P}}
+
+\def\tf{\tilde{f}}
+\def\tx{\tilde{x}}
+\def\Dom{\mbox{Dom}}
+\def\ty{\tilde{y}}
+
+%Extra stuff - to be integrated in the future
+
+\newcommand{\eqd}{\overset{\,_{\!d}}{=}}
+\newcommand{\defn}[1]{\emph{#1}}
+
+\newcommand{\Law}{\mathcal{L}}
+
+\def\given{\,|\,}
+
+\newcommand{\NonNegInts}{\mathbb{Z}_+}
+\newcommand{\Nats}{\mathbb{N}}
+\newcommand{\Rationals}{\mathbb{Q}}
+\newcommand{\Reals}{\mathbb{R}}
+
+\newcommand{\as}{\textrm{a.s.}}
+
+\def\[#1\]{\begin{align}#1\end{align}}
+\newcommand{\defas}{:=}
+
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\dist}{\ \sim\ }
+
+\newcommand{\kernel}{\kappa}
+\newcommand{\kernelmatrix}{K}
+\newcommand{\scalefactor}{s}
+\newcommand{\lengthscale}{\ell}
+\newcommand{\targets}{T}
+\newcommand{\noise}{\sigma_\targets}
+\newcommand{\pseudopoints}{\eta}
+\newcommand{\inputpoints}{\xi}
+\newcommand{\covhyppar}{\psi}
+\newcommand{\logistic}{\phi}
+
+\newcommand{\CompOrder}{\mathcal{O}}
+
+\newtheorem{thm}{Theorem}%[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[thm]{Definition}%[section]
+\newtheorem{conj}{Conjecture}[section]
+\newtheorem{exmp}{Example}[section]
+\newtheorem{rem}[thm]{Remark}
+
+\theoremstyle{remark}
+%\newtheorem{rem}{Remark}
+\newtheorem{note}{Note}
+\newtheorem{case}{Case}
+
+\def\Uniform{\mbox{\rm Uniform}}
+\def\Bernoulli{\mbox{\rm Bernoulli}}
+\def\ie{i.e.\ }
+\def\eg{e.g.\ }
+\def\etc{etc.\ }
+\def\iid{i.i.d.\ }
+\def\simiid{\sim_{\mbox{\tiny iid}}}
+\def\eqdist{\stackrel{\mbox{\tiny d}}{=}}
+\def\GP{\mathcal{GP}}
+\def\Transpose{^\textrm{T}}

@@ -30,3 +30,9 @@
 *.vrb
 *.xdy
 *.tdo
+
+# Custom
+
+latex/GEFCom2012-JRL.pdf
+*.swp
+*~
