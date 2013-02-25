@@ -87,7 +87,7 @@
 \address{}
 
 \begin{abstract}
-This report discusses methods for forecasting hourly loads of a US utility as part of the load forecasting track of the Global Energy Forecasting Competition 2012 hosted by Kaggle.
+This report discusses methods for forecasting hourly loads of a US utility as part of the load forecasting track of the Global Energy Forecasting Competition 2012 hosted on Kaggle.
 The methods described (gradient boosting machines and Gaussian processes) are generic machine learning / regression algorithms and few domain specific adjustments were made.
 Despite this, the algorithms were able to produce highly competitive predictions and hopefully they can inspire more refined techniques to compete with state-of-the-art load forecasting methodologies.
 \end{abstract}
@@ -105,31 +105,37 @@ This report details the methods I used when competing in the load forecasting tr
 It is split into sections describing each technique used for forecasting temperatures and loads.
 Within each section I have motivated the particular choice of algorithm, discussed how it was used and described how to replicate the results using the spreadsheets and scripts accompanying this report\footnotemark.
 
-\footnotetext{Available at \url{https://github.com/jamesrobertlloyd/GEFCOM2012/}}
+\footnotetext{Source code available at \url{https://github.com/jamesrobertlloyd/GEFCOM2012/}}
 
 I approached the competition in the spirit of a data mining competition.
-Consequently, some of the choices detailed below were based on intuition rather than objective analysis.
-This was done purely to save time and focus on the aspects of the data most likely to give the largest increases in performance.
-In general, many of the choices based on intuition could have been replaced by appropriate searches and cross validation; where more complex techniques would be required I have briefly described how one could perform a more objective analysis.
-
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
+Consequently, some of the choices detailed below were based on intuition to save time and focus on the aspects of the data most likely to give the largest increases in performance.
+Many of these choices could have been replaced by appropriate searches and cross validation; where more complex techniques would be required I have briefly described how one could perform a more objective analysis.
 
 \section{Data cleaning}
 
-Seemed ok - let algorithms look through noise.
+A sensible first step in any prediction task is to look at your data; in particular searching for anomalies.
+This was performed for both temperature and load data using the spreadsheets \texttt{temp/temp.xlsx} and \texttt{load/load.xlsx} by plotting the data as time series and using various types of conditional formatting to search for irregularities visually.
 
-\section{Weekends, holidays and other non-stationary phenomena}
+\TBD{
+This visual analysis revealed a large discontinuity in load series 10 \dots and series 9 was seen to be very different to the other ones \dots
+}
+No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptbaly well without further data cleaning.
 
-Ignored
+\section{Holidays and other non-stationary phenomena}
+
+No adjustments were made for holidays or other irregular events such as black-outs.
+Ignoring them was merely a practicality of time constraints rather than a design choice.
 
 \section{Temperature forecasting}
 
 \subsection{Initial analysis and remarks}
 
-The error metric used in GEFCom2012 was heavily weighted towards load predictions at times at which temperatures were unknown (\ie the load forecast rather than backcast).
+The error metric used in GEFCom2012 was heavily weighted towards times at which temperatures were unknown (\ie the load forecast rather than backcasts).
 Consequently, good temperature predictions seemed crucial for overall success.
-When optimising parameters of the temperature prediction methodology, my optimisation criterion was the public test score (as evaluated by Kaggle) of derived load prediction methods.
+
+When submitting a solution to Kaggle, the error metric was computed on 25\% of the held out data and returned to the user.
+This allowed a user to optimise temperature predictions by optimising the score of resulting load predicitons.
+Depending on how the test data was split (into the 25\% test and 75\% validation partition) this may have allowed users to come very close to knowing the true future temperatures.
 
 \begin{figure}[ht]
   \begin{center}
@@ -155,8 +161,8 @@ The parameters of this model (length scale and scale factor of the squared expon
 
 The difference between the temperature and the smoothed temperature was assumed to be a smooth periodic function with a period of one day.
 This modelling assumption was implemented using a Gaussian process with a periodic kernel (again regressing the difference on time).
-Parameters of this model were chosen by optimising the marginal likelihood of the data given the model and parameters using standard optimisation methods supplied in the GPML toolbox\footnotemark.
-Only the last 250 data points were used to fit this part of the model in order to capture the recent temperature dynamics.
+Parameters of this model were chosen by optimising the marginal likelihood of the model given particular parameters using optimisation methods supplied in the GPML toolbox\footnotemark.
+Only the last 250 data points were used to fit this part of the model in order to capture recent temperature dynamics.
 \footnotetext{\url{http://www.gaussianprocess.org/gpml/code/matlab/doc/}}
 
 \subsection{Replication of results}
@@ -168,13 +174,13 @@ The method described above is implemented by the MATLAB script \texttt{predict\_
 
 \subsection{Discussion}
 
-The red curve in figure~\ref{fig:temp_pred} shows the result of the above methodology applied to temperature station 1.
+The red curve in figure~\ref{fig:temp_pred} shows the result of the methodology applied to temperature station 1.
 The fit to the data is far from perfect but it has captured the broad features of the data.
 I am unfamiliar with the temperature/weather forecasting literature but I am quite certain that far better methods exist!
 
 \section{Load forecasting overview}
 
-My methodology for load back/forecasting was to try different general purpose learning algorithms and then ensemble (average) the predictions.
+My methodology for load back/forecasting was to try different general purpose learning / regression algorithms and then ensemble (average) the predictions.
 The final ensemble comprised predictions from a gradient boosting machine, Gaussian process regression and the benchmark solution provided by the competition organisers (a linear model).
 
 \section{Gradient boosting machine}
@@ -194,18 +200,19 @@ The final ensemble comprised predictions from a gradient boosting machine, Gauss
 Figure~\ref{fig:load_temp} plots a subset of the data for loads at zone 1 and temperature station 9.
 We can see that that the load has a smoothly varying trend with roughly periodic daily deviations from this trend.
 The load also appears to be negatively correlated with temperature in this region of data.
+It is also reasonable to assume that load dynamics will be different on weekends compared to weekdays.
 
-Based on these observations, I used gradient boosting machines to model loads as a function of time of day, temperatures (all stations) and smoothed temperatures.
-All zones were modelled independently.
+Based on these observations, I used gradient boosting machines to model loads as a function of time of day, time within week, temperatures (all stations) and smoothed temperatures.
+All zones were modelled independently for simplicity.
 
 \subsection{Methodology}
 
-A standard `black-box' technique for learning an unknown (regression) function is that of using gradient boosting machines (GBM) \citep[e.g. chapter 10 of][]{Hastie2009}.
+A standard `black-box' technique for learning an unknown regression function is that of using gradient boosting machines (GBM) \citep[e.g. chapter 10 of][]{Hastie2009}.
 For each zone I used all of the data to train a GBM and then used that to predict all outputs \ie I learnt a global function for each zone.
 
 I used a standard R implementation of GBM using most of the default settings\footnotemark.
 After some brief experimentation with parameter values I used a shrinkage factor of 0.01, 10000 trees and an interaction depth of 3.
-I experimented with other parameter values, using the public test score as a guide, but nothing I tried improved on my initial guess and therefore I did not expend much effort trying to optimise parameter values.
+I experimented with other parameter values, using the public test score as a guide, but nothing I tried improved upon my initial guess and therefore I did not expend much effort trying to optimise parameter values.
 
 \footnotetext{\url{http://cran.r-project.org/web/packages/gbm/index.html}}
 
@@ -214,14 +221,14 @@ I experimented with other parameter values, using the public test score as a gui
 The scripts and data used can be found in the folder \texttt{gbm}.
 The load data was reshaped into a (time) $\times$ (load zone) array using the spreadsheet \texttt{load.xlsx} in the folder \texttt{load}.
 This was then concatenated with the temperature predictions and smoothed temperature predictions and saved in \texttt{Z\_t\_T\_no\_year.csv}.
-The R script \texttt{basic\_gb.R} then performs the method described above to produce predictions which are saved in \texttt{basic\_gb\_Z\_t\_T\_no\_year\_pred.csv}.
+The R script \texttt{basic\_gb.R} then performs the method described above to produce predictions which are saved in \\ \texttt{basic\_gb\_Z\_t\_T\_no\_year\_pred.csv}.
 
 \subsection{Discussion}
 
-The time series for zone 10 had a very large discontinuity.
+The time series for zone 10 had a very large discontinuity\fTBD{reference plot}.
 GBM was used as a global prediction method which means it will have produced very bad predictions for zone 10.
 I later fixed this by modelling the loads either side of the discontinuity separately.
-Perversely this resulted in a worse public test score.
+Perversely, this resulted in a worse public test score.
 However, this change resulted in a much improved private test score; in hindsight I should have opted for the more reasonable model!
 
 \section{Gaussian processes}
@@ -234,7 +241,8 @@ Specifying the kernel function of a Gaussian process allows us to encode these s
 \subsection{Methodology}
 
 Three different kernel functions were used; one for backcasting, one for forecasting and one for backcasting zone 9.
-The three kernels used were as follows
+The form of the three kernels used were as follows\footnotemark
+\footnotetext{See source code for parameter values}
 \begin{eqnarray}
 S_t + S_S + S_t \times S_T \times P_t \label{eqn:kernel1}\\
 S_t + S_t + P_t \label{eqn:kernel2}\\
@@ -242,23 +250,23 @@ S_t + S_S + S_T \times P_t\label{eqn:kernel3}
 \end{eqnarray}
 where $S$ refers to a squared exponential kernel, $P$ is a periodic kernel and the subscripts indicate which dimension the kernel acts upon; (t)ime, (T)emperature or (S)moothed temperature.
 For backcasting, the model was applied to the 1000 surrounding data points; for forecasting the last 500 data points were used.
-Only one temperature station was used in this method; for each back/forecasting region the marginal likelihood of the data was computed for each temperature station.
-Bayesian model averaging \citep[e.g.][]{Hoeting1999} was then used to combine the predictions (in practice, this was almost numerically equivalent to selecting the model/temperature station with the highest marginal likelihood).
+Only one temperature station was used in this method; for each back/forecasting region the marginal likelihood of the model was computed for each temperature station.
+Bayesian model averaging \citep[e.g.][]{Hoeting1999} was then used to combine the predictions (in practice, this was usually numerically equivalent to selecting the model/temperature station with the highest marginal likelihood).
 
 Kernel~\eqref{eqn:kernel1} encodes the assumptions that loads can be explained as a smoothly varying trend and an approximately periodic component.
 The smooth trend is the sum of a smooth function of smoothed temperature and a smooth function of time (to explain any deviations from the trend implied by temperature).
 The periodic component can vary through time and by being multiplied by $S_t$ and $S_T$ the shape of the periodicity will be more similar to recent times and points in time with similar temperatures.
 This kernel was used for backcasting all zones apart from zone 9.
 An example of this kernel in action is shown in figure~\ref{fig:load_pred}.
-The top plot shows the load data (black) and the prediction (red).
-Below is the temperature time series which resulted in the model with the highest marginal likelihood.
+The left plot shows the load data (black) and the prediction (red).
+On the right is the temperature time series which resulted in the model with the highest marginal likelihood.
 Comparing the two plots we can see that the deviations of the prediction from the trend through time correspond to fluctuations in the temperature time series.
 
 \begin{figure}[ht]
   \begin{center}
     \input{include/load_pred.tex}
   \end{center}
-  \caption{Top: Raw data (after scaling and translation) (black) and Gaussian process predictions (red) for zone 1. Bottom: Corresponding temperature time series used for prediction.}
+  \caption{Left: Raw data (after scaling and translation) (black) and Gaussian process predictions (red) for zone 1. Right: Corresponding temperature time series used for prediction.}
   \label{fig:load_pred}
 \end{figure}
 
@@ -282,7 +290,7 @@ The MATLAB script \texttt{gp\_elec\_predict\_load\_v04.m} performs the methodolo
 \subsection{Discussion}
 
 Selecting the form and parameters of the kernels by hand requires a moderate amount of familiarity with Gaussian processes.
-Automatic selection of kernel functions is an active area of research \citep[e.g.][]{DBLP:journals/corr/abs-0909-0844, diosan2007evolving, duvenaud2011additive11} to cite but a few different approaches.
+Automatic selection of kernel functions is an active area of research; recent publications include an automated search over kernel expressions including those used here by \cite{duvenaud2013structure} and a new class of kernels designed to have good extrapolation performance by \cite{wilson2013gaussian}.
 It is likely that better performance could have been achieved by a larger and more principled search over kernel functions.
 
 \section{Selecting the final ensemble}
@@ -311,21 +319,21 @@ The output of this spreadsheet was then copied in \texttt{ensemble\_creator.xlsx
 
 This method could have been been slightly improved by programmatically selecting the ensemble weights, optimising some form of validation metric.
 One could also have tried to optimise the public test score directly.
-Since only 2 submissions could be tested per day, one would want to use an optimisation technique that made very efficient use of data \citep[e.g.][]{Osborne2009}.
+Since only 2 submissions could be tested per day, one would want to use an optimisation technique that made very efficient use of data \citep[e.g.][]{Osborne2009, snoek2012practical}.
 
 Larger improvements could likely be achieved by considering a larger number of base predictions.
 It is likely that the algorithms used by other competitors in GEFCom2012 would provide useful additions to the ensemble of predictions.
 
 \section{Conclusion}
 
-In this competition I applied general purpose machine learning algorithms and made few adjustments for the specific domain the data arose from.
+In this competition I applied general purpose machine learning / regression algorithms and made few adjustments for the specific domain the data arose from.
 Despite this, the resulting predictions were highly competitive.
 It is hoped that this report shows that simple techniques can be very effective for predictive modelling and can inspire practical techniques for load forecasting.
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
 
-I would like to thank Alex Davies for his guidance into the ways of data mining and David Duvenaud for advice on the practicalities of using Gaussian processes.
+I would like to thank Alex Davies for guidance into the ways of data mining and David Duvenaud for advice on the practicalities of using Gaussian processes.
 
 \appendix
 
