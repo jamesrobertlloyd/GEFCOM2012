@@ -124,8 +124,8 @@ This was performed for both temperature and load data using the spreadsheets \te
   \label{fig:load}
 \end{figure}
 
-This visual analysis revealed a large discontinuity in load series 10 and series 9 was observed to have atypical dynamics (see figure~\ref{fig:load} and others for comparison).
-No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptbaly well without further data cleaning.
+This visual analysis revealed a large discontinuity in load series 10 and atypical dunamics in series 9 (see figure~\ref{fig:load} and others for comparison).
+No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptably well without further data cleaning.
 
 \section{Holidays and other non-stationary phenomena}
 
@@ -182,11 +182,11 @@ The method described above is implemented by the MATLAB script \texttt{predict\_
 
 The red curve in figure~\ref{fig:temp_pred} shows the result of the methodology applied to temperature station 1.
 The fit to the data is far from perfect but it has captured the broad features of the data.
-I am unfamiliar with the temperature/weather forecasting literature but I am quite certain that far better methods exist!
+I am unfamiliar with the temperature / weather forecasting literature but I am quite certain that far better methods exist!
 
 \section{Load forecasting overview}
 
-My methodology for load back/forecasting was to try different general purpose learning / regression algorithms and then ensemble (average) the predictions.
+My methodology for load back / forecasting was to try different general purpose learning / regression algorithms and then ensemble (average) the predictions.
 The final ensemble comprised predictions from a gradient boosting machine, Gaussian process regression and the benchmark solution provided by the competition organisers (a linear model).
 
 \section{Gradient boosting machine}
@@ -256,8 +256,8 @@ S_t + S_S + S_T \times P_t\label{eqn:kernel3}
 \end{eqnarray}
 where $S$ refers to a squared exponential kernel, $P$ is a periodic kernel and the subscripts indicate which dimension the kernel acts upon; (t)ime, (T)emperature or (S)moothed temperature.
 For backcasting, the model was applied to the 1000 surrounding data points; for forecasting the last 500 data points were used.
-Only one temperature station was used in this method; for each back/forecasting region the marginal likelihood of the model was computed for each temperature station.
-Bayesian model averaging \citep[e.g.][]{Hoeting1999} was then used to combine the predictions (in practice, this was usually numerically equivalent to selecting the model/temperature station with the highest marginal likelihood).
+Only one temperature station was used in this method; for each back / forecasting region the marginal likelihood of the model was computed for each temperature station.
+Bayesian model averaging \citep[e.g.][]{Hoeting1999} was then used to combine the predictions (in practice, this was usually numerically equivalent to selecting the model / temperature station with the highest marginal likelihood).
 
 Kernel~\eqref{eqn:kernel1} encodes the assumptions that loads can be explained as a smoothly varying trend and an approximately periodic component.
 The smooth trend is the sum of a smooth function of smoothed temperature and a smooth function of time (to explain any deviations from the trend implied by temperature).
@@ -296,7 +296,7 @@ The MATLAB script \texttt{gp\_elec\_predict\_load\_v04.m} performs the methodolo
 \subsection{Discussion}
 
 Selecting the form and parameters of the kernels by hand requires a moderate amount of familiarity with Gaussian processes.
-Automatic selection of kernel functions is an active area of research; recent publications include an automated search over kernel expressions including those used here by \cite{duvenaud2013structure}, using deep neural networks  to learn a kernel function by \cite{salakhutdinov2008using} and a new class of kernels designed to have good extrapolation performance by \cite{wilson2013gaussian}.
+Automatic selection of kernel functions is an active area of research; recent publications include an automated search over a generative grammar of kernel expressions by \cite{duvenaud2013structure}, using deep neural networks to learn a kernel function by \cite{salakhutdinov2008using} and a new class of kernels designed to have good extrapolation performance by \cite{wilson2013gaussian}.
 It is likely that better performance could have been achieved by a larger and more principled search over kernel functions.
 
 \section{Selecting the final ensemble}
