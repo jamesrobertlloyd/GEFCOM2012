@@ -116,9 +116,15 @@ Many of these choices could have been replaced by appropriate searches and cross
 A sensible first step in any prediction task is to look at your data; in particular searching for anomalies.
 This was performed for both temperature and load data using the spreadsheets \texttt{temp/temp.xlsx} and \texttt{load/load.xlsx} by plotting the data as time series and using various types of conditional formatting to search for irregularities visually.
 
-\TBD{
-This visual analysis revealed a large discontinuity in load series 10 \dots and series 9 was seen to be very different to the other ones \dots
-}
+\begin{figure}[ht]
+  \begin{center}
+    \input{include/load.tex}
+  \end{center}
+  \caption{Left: Raw data at zone 10, showing a large discontinuity. Right: First 1000 data points at zone 9, showing atypical load dynamics.}
+  \label{fig:load}
+\end{figure}
+
+This visual analysis revealed a large discontinuity in load series 10 and series 9 was observed to have atypical dynamics (see figure~\ref{fig:load} and others for comparison).
 No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptbaly well without further data cleaning.
 
 \section{Holidays and other non-stationary phenomena}
@@ -225,7 +231,7 @@ The R script \texttt{basic\_gb.R} then performs the method described above to pr
 
 \subsection{Discussion}
 
-The time series for zone 10 had a very large discontinuity\fTBD{reference plot}.
+The time series for zone 10 had a very large discontinuity (see left of figure~\ref{fig:load}).
 GBM was used as a global prediction method which means it will have produced very bad predictions for zone 10.
 I later fixed this by modelling the loads either side of the discontinuity separately.
 Perversely, this resulted in a worse public test score.
@@ -285,12 +291,12 @@ The spreadsheet and scripts used can be found in the folder \texttt{gp}.
 The load data was reshaped into a (time) $\times$ (load zone) array using the spreadsheet \texttt{load.xlsx} in the folder \texttt{load} and then saved in \texttt{Z\_t\_with\_zeros.csv} which encodes missing values as zeros.
 The outputs of the temperature prediction \texttt{GP\_pred\_temp\_008.csv} and \texttt{smooth\_temp\_GP\_08.mat} are used directly.
 
-The MATLAB script \texttt{gp\_elec\_predict\_load\_v04.m} performs the methodology described above, saving the predictions to \texttt{gp\_elec\_GP\_pred\_covElec07.csv}.
+The MATLAB script \texttt{gp\_elec\_predict\_load\_v04.m} performs the methodology described above, saving the predictions to\\ \texttt{gp\_elec\_GP\_pred\_covElec07.csv}.
 
 \subsection{Discussion}
 
 Selecting the form and parameters of the kernels by hand requires a moderate amount of familiarity with Gaussian processes.
-Automatic selection of kernel functions is an active area of research; recent publications include an automated search over kernel expressions including those used here by \cite{duvenaud2013structure} and a new class of kernels designed to have good extrapolation performance by \cite{wilson2013gaussian}.
+Automatic selection of kernel functions is an active area of research; recent publications include an automated search over kernel expressions including those used here by \cite{duvenaud2013structure}, using deep neural networks  to learn a kernel function by \cite{salakhutdinov2008using} and a new class of kernels designed to have good extrapolation performance by \cite{wilson2013gaussian}.
 It is likely that better performance could have been achieved by a larger and more principled search over kernel functions.
 
 \section{Selecting the final ensemble}
