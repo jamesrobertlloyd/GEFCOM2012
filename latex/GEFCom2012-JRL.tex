@@ -160,7 +160,7 @@ For simplicity, I modelled the smooth trend and daily periodicity separately and
 
 The smooth trend was estimated within the data using local linear regression \citep[e.g. chapter 6 of][]{Hastie2009} with a bandwidth of one day.
 I assumed that the smooth trend would probably smoothly return to the historical average.
-A suitable modelling technique that would give this type of prediction is Gaussian process regression \citep[e.g.][]{Rasmussen2006} (see the appendix for a very brief introduction); the difference between the smoothed temperature and its historical average was regressed on time using a squared exponential kernel and zero mean function.
+A suitable modelling technique that would give this type of prediction is Gaussian process regression \citep[e.g.][]{Rasmussen2006} (see the appendix for a very brief introduction); the difference between the smoothed temperature and its historical average was regressed against time using a squared exponential kernel and zero mean function.
 
 In figure~\ref{fig:temp_pred}, the blue curve shows the historical average of smoothed temperatures and the green line shows the current smoothed temperature and prediction.
 The parameters of this model (length scale and scale factor of the squared exponential kernel) were tuned by hand, initially choosing sensible values based on plots of the data and then trying to optimise the public test score of derived load predictions.
@@ -186,7 +186,7 @@ I am unfamiliar with the temperature / weather forecasting literature but I am q
 
 \section{Load forecasting overview}
 
-My methodology for load back / forecasting was to try different general purpose learning / regression algorithms and then ensemble (average) the predictions.
+My methodology for load back / forecasting was to try different general purpose regression algorithms and then ensemble (average) the predictions.
 The final ensemble comprised predictions from a gradient boosting machine, Gaussian process regression and the benchmark solution provided by the competition organisers (a linear model).
 
 \section{Gradient boosting machine}
@@ -242,7 +242,9 @@ However, this change resulted in a much improved private test score; in hindsigh
 \subsection{Initial analysis and remarks}
 
 The observations made about the load data in section~\ref{sec:gbm_init_anal} (\ie smooth trends, near periodic variations, dependence on temperature) can be modelled using Gaussian process regression.
-Specifying the kernel function of a Gaussian process allows us to encode these structural assumptions into a Bayesian nonparametric analysis that can learn the details of the regression function from the data (see the appendix for a brief introduction to the effect of choosing different kernels).
+Specifying the kernel function of a Gaussian process allows us to encode these structural assumptions into a regression model.
+%into a Bayesian nonparametric analysis that can learn the details of the regression function from the data.
+See the appendix for a brief introduction to the effect of choosing different kernels.
 
 \subsection{Methodology}
 
@@ -272,7 +274,7 @@ Comparing the two plots we can see that the deviations of the prediction from th
   \begin{center}
     \input{include/load_pred.tex}
   \end{center}
-  \caption{Left: Raw data (after scaling and translation) (black) and Gaussian process predictions (red) for zone 1. Right: Corresponding temperature time series used for prediction.}
+  \caption{Left: Raw data (after scaling and translation) (black) and Gaussian process predictions (red) for zone 1. Right: Corresponding temperature time series used for prediction. Notice that the peak in temperature corresponds to a trough in the load predictions \ie the model has predicted a negative correlation between temperatures and loads.}
   \label{fig:load_pred}
 \end{figure}
 
@@ -308,7 +310,7 @@ Ensembling is a very powerful technique for combining predictions from separate 
 If two predictions (viewed as random quantities) are statistically uncorrelated then their average will have lower variance than either one separately.
 
 In practice, different algorithms are correlated and ensembling highly correlated predictions will rarely lead to improved performance.
-In particular, I also tried the random forest algorithm but the predictions were too correlated with gradient boosting machines (they are both based on an ensemble of decision trees) to be a useful component in an ensemble.
+In particular, I also tried the random forest algorithm but the predictions were too correlated with gradient boosting machines (they are both based on an ensemble of decision trees) to be a useful addition to the ensemble.
 
 \subsection{Methodology}
 
@@ -337,7 +339,7 @@ Despite this, the resulting predictions were highly competitive.
 It is hoped that this report shows that simple techniques can be very effective for predictive modelling and can inspire practical techniques for load forecasting.
 
 % use section* for acknowledgement
-\section*{Acknowledgment}
+\section*{Acknowledgments}
 
 I would like to thank Alex Davies for guidance into the ways of data mining and David Duvenaud for advice on the practicalities of using Gaussian processes.
 
@@ -346,11 +348,11 @@ I would like to thank Alex Davies for guidance into the ways of data mining and 
 \section{A very brief introduction to Gaussian processes}
 
 For a much richer introduction, see \cite{Rasmussen2006}.
-A Gaussian process, $(f_x)_{x \in X}$ is a set of random variables such that any finite collection has a jointly Gaussian distribution.
+A Gaussian process, $(f(x))_{x \in X}$ is a set of random variables such that any finite collection has a jointly Gaussian distribution.
 A Gaussian process can be completely specified by a mean function $m(x)$ and kernel function $\kappa (x, x')$ such that
 \begin{eqnarray}
-\text{Expectation}(f_x) & = & m(x) \\
-\text{Covariance}(f_x, f_{x'}) & = & \kappa (x, x').
+\text{Expectation}(f(x)) & = & m(x) \\
+\text{Covariance}(f(x), f(x')) & = & \kappa (x, x').
 \end{eqnarray}
 
 Gaussian processes can be used to specify a prior distribution on functions and then be used in a Bayesian analysis.
