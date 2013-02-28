@@ -166,7 +166,7 @@ In figure~\ref{fig:temp_pred}, the blue curve shows the historical average of sm
 The parameters of this model (length scale and scale factor of the squared exponential kernel) were tuned by hand, initially choosing sensible values based on plots of the data and then trying to optimise the public test score of derived load predictions.
 
 The difference between the temperature and the smoothed temperature was assumed to be a smooth periodic function with a period of one day.
-This modelling assumption was implemented using a Gaussian process with a periodic kernel (again regressing the difference on time).
+This modelling assumption was implemented using a Gaussian process with a periodic kernel (again regressing the difference against time).
 Parameters of this model were chosen by optimising the marginal likelihood of the model given particular parameters using optimisation methods supplied in the GPML toolbox\footnotemark.
 Only the last 250 data points were used to fit this part of the model in order to capture recent temperature dynamics.
 \footnotetext{\url{http://www.gaussianprocess.org/gpml/code/matlab/doc/}}
@@ -242,7 +242,7 @@ However, this change resulted in a much improved private test score; in hindsigh
 \subsection{Initial analysis and remarks}
 
 The observations made about the load data in section~\ref{sec:gbm_init_anal} (\ie smooth trends, near periodic variations, dependence on temperature) can be modelled using Gaussian process regression.
-Specifying the kernel function of a Gaussian process allows us to encode these structural assumptions into a regression model.
+Specifying the kernel function of a Gaussian process allows one to encode these structural assumptions into a regression model.
 %into a Bayesian nonparametric analysis that can learn the details of the regression function from the data.
 See the appendix for a brief introduction to the effect of choosing different kernels.
 
@@ -368,7 +368,7 @@ They are nonparametric and can learn any function given sufficient data.
 
 The kernel function encodes the structure of a Gaussian process.
 The top plot in figure~\ref{fig:gp_samples} shows samples (random draws) from a Gaussian process distribution using squared exponential kernels; this function encodes an assumption of smoothness.
-Intuitively, these plots show the types of functions that will most easily/quickly be learned using Gaussian process regression.
+Intuitively, these plots show the types of functions that will most easily / quickly be learned using Gaussian process regression.
 One parameter of a squared exponential kernel is a length scale which controls how quickly the value of the Gaussian process varies.
 The blue line in the top plot has a short length scale which results in quick variations of the function.
 The green line has a long length scale and consequently the Gaussian process is visually much smoother.
