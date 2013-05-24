@@ -171,7 +171,7 @@ Depending on how the test data was split (into the 25\% test and 75\% validation
 
 I therefore used a flexible but simple method for forecasting temperatures that could be easily tuned.
 Figure~\ref{fig:temp_pred} shows data from temperature station 1 along with various curves used for prediction (described later).
-The black line is the raw data, which shows that temperatures follow a smooth trend with a daily pattern of rising and falling temperatures.
+The black solid line is the raw data, which shows that temperatures follow a smooth trend with a daily pattern of rising and falling temperatures.
 For simplicity, I modelled the smooth trend and daily periodicity separately and modelled each temperature station in isolation.
 
 \subsection{Methodology}
@@ -180,7 +180,7 @@ The smooth trend was estimated within the data using local linear regression \ci
 I assumed that the smooth trend would probably smoothly return to the historical average.
 A suitable modelling technique that would give this type of prediction is Gaussian process regression \citep[e.g.][]{Rasmussen2006} (see the appendix for a very brief introduction); the difference between the smoothed temperature and its historical average was regressed against time using a squared exponential kernel and zero mean function.
 
-In Figure~\ref{fig:temp_pred}, the blue curve shows the historical average of smoothed temperatures and the green line shows the current smoothed temperature and prediction.
+In Figure~\ref{fig:temp_pred}, the thick blue dashed curve shows the historical average of smoothed temperatures and the thick green dotted line shows the current smoothed temperature and prediction.
 The parameters of the GP model (length scale and scale factor of the squared exponential kernel) were tuned by hand, initially choosing sensible values based on plots of the data and then trying to optimise the public test score of derived load predictions.
 
 The difference between the temperature and the smoothed temperature was assumed to be a smooth periodic function with a period of one day.
@@ -283,7 +283,7 @@ The smooth trend is the sum of a smooth function of smoothed temperature and a s
 The periodic component can vary through time and by being multiplied by $\SE_t$ and $\SE_T$ the shape of the periodicity will be more similar to recent times and points in time with similar temperatures.
 This kernel was used for backcasting all zones apart from zone 9.
 An example of this kernel in action is shown in Figure~\ref{fig:load_pred}.
-The left plot shows the load data (black) and the prediction (red).
+The left plot shows the load data (black solid) and the prediction (red dashed).
 On the right is the temperature time series which resulted in the model with the highest marginal likelihood.
 Comparing the two plots we can see that the deviations of the prediction from the trend through time correspond to fluctuations in the temperature time series.
 
