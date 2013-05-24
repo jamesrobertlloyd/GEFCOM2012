@@ -32,6 +32,7 @@
 \usepackage{textcomp}
 \usepackage{include/picins}
 \usepackage{tikz}
+\usepackage{acronym}
 \usetikzlibrary{shapes.geometric,arrows,chains,matrix,positioning,scopes,calc}
 \tikzstyle{mybox} = [draw=white, rectangle]
 \usepackage{booktabs}
@@ -49,6 +50,14 @@
 %\renewcommand{\PROBLEM}[1]{}
 %\renewcommand{\fPROBLEM}[1]{}  
 %\renewcommand{\NA}[1]{#1}  %% Note, NA's pass through!
+
+\newcommand{\acro}[1]{\textsc{#1}}
+\newcommand{\kSE}{{\acro{SE}}}
+\newcommand{\kPer}{{\acro{Per}}}
+\def\SE{\acro{SE}}
+\def\Per{\acro{Per}}
+\def\RQ{\acro{RQ}}
+\def\Lin{\acro{Lin}}
 
 \journal{International Journal of Forecasting}
 
@@ -93,12 +102,12 @@ Despite this, the algorithms were able to produce highly competitive predictions
 \end{abstract}
 
 \begin{keyword}
-Utility forecasting \sep Gradient boosting machines \sep Gaussian processes
+Load forecasting \sep Gradient boosting machines \sep Gaussian processes
 \end{keyword}
 
 \end{frontmatter}
 
-\section{Inroduction}
+\section{Introduction}
 
 This report details the methods I used when competing in the load forecasting track of GEFCom2012\footnotemark.
 \footnotetext{\url{http://www.gefcom.org/}}
@@ -111,7 +120,16 @@ I approached the competition in the spirit of a data mining competition.
 Consequently, some of the choices detailed below were based on intuition to save time and focus on the aspects of the data most likely to give the largest increases in performance.
 Many of these choices could have been replaced by appropriate searches and cross validation; where more complex techniques would be required I have briefly described how one could perform a more objective analysis.
 
-\section{Data cleaning}
+My methodology for load back / forecasting was to try different general purpose regression algorithms and then ensemble (average) the predictions.
+The final ensemble comprised predictions from a gradient boosting machine (GBM), Gaussian process (GP) regression and the benchmark solution provided by the competition organisers (a linear model).
+
+This paper is organised as follows.
+Section \ref{sec:cleans} discusses data cleansing, section \ref{sec:temp} is on temperature forecasting, sections \ref{sec:gbm} and \ref{sec:gp} introduce the GBM and GP forecasting methodologies respectively and section \ref{sec:ensemble} discusses how the final ensemble prediction was formed.
+A brief introduction to Gaussian processes is provided in \ref{sec:gp_appendix}.
+
+\section{Data cleansing}
+
+\label{sec:cleans}
 
 A sensible first step in any prediction task is to look at your data; in particular searching for anomalies.
 This was performed for both temperature and load data using the spreadsheets \texttt{temp/temp.xlsx} and \texttt{load/load.xlsx} by plotting the data as time series and using various types of conditional formatting to search for irregularities visually.
@@ -124,15 +142,15 @@ This was performed for both temperature and load data using the spreadsheets \te
   \label{fig:load}
 \end{figure}
 
-This visual analysis revealed a large discontinuity in load series 10 and atypical dunamics in series 9 (see figure~\ref{fig:load} and others for comparison).
-No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptably well without further data cleaning.
-
-\section{Holidays and other non-stationary phenomena}
+This visual analysis revealed a large discontinuity in load series 10 and atypical dynamics in series 9 (see figure~\ref{fig:load} and others for comparison).
+No other large anomalies were detected during the first inspection of the data and smaller irregularities were not revisited since the algorithms detailed below performed acceptably well without further data cleansing.
 
 No adjustments were made for holidays or other irregular events such as black-outs.
 Ignoring them was merely a practicality of time constraints rather than a design choice.
 
 \section{Temperature forecasting}
+
+\label{sec:temp}
 
 \subsection{Initial analysis and remarks}
 
@@ -140,7 +158,7 @@ The error metric used in GEFCom2012 was heavily weighted towards times at which 
 Consequently, good temperature predictions seemed crucial for overall success.
 
 When submitting a solution to Kaggle, the error metric was computed on 25\% of the held out data and returned to the user.
-This allowed a user to optimise temperature predictions by optimising the score of resulting load predicitons.
+This allowed a user to optimise temperature predictions by optimising the score of resulting load predicitions.
 Depending on how the test data was split (into the 25\% test and 75\% validation partition) this may have allowed users to come very close to knowing the true future temperatures.
 
 \begin{figure}[ht]
@@ -162,13 +180,13 @@ The smooth trend was estimated within the data using local linear regression \ci
 I assumed that the smooth trend would probably smoothly return to the historical average.
 A suitable modelling technique that would give this type of prediction is Gaussian process regression \citep[e.g.][]{Rasmussen2006} (see the appendix for a very brief introduction); the difference between the smoothed temperature and its historical average was regressed against time using a squared exponential kernel and zero mean function.
 
-In figure~\ref{fig:temp_pred}, the blue curve shows the historical average of smoothed temperatures and the green line shows the current smoothed temperature and prediction.
-The parameters of this model (length scale and scale factor of the squared exponential kernel) were tuned by hand, initially choosing sensible values based on plots of the data and then trying to optimise the public test score of derived load predictions.
+In Figure~\ref{fig:temp_pred}, the blue curve shows the historical average of smoothed temperatures and the green line shows the current smoothed temperature and prediction.
+The parameters of the GP model (length scale and scale factor of the squared exponential kernel) were tuned by hand, initially choosing sensible values based on plots of the data and then trying to optimise the public test score of derived load predictions.
 
 The difference between the temperature and the smoothed temperature was assumed to be a smooth periodic function with a period of one day.
 This modelling assumption was implemented using a Gaussian process with a periodic kernel (again regressing the difference against time).
-Parameters of this model were chosen by optimising the marginal likelihood of the model given particular parameters using optimisation methods supplied in the GPML toolbox\footnotemark.
-Only the last 250 data points were used to fit this part of the model in order to capture recent temperature dynamics.
+Parameters of the GP model were chosen by optimising the marginal likelihood of the model given particular parameters using optimisation methods supplied in the GPML toolbox\footnotemark.
+Only the last 250 data points (which corresponds approximately to 10 days) were used to fit this part of the model in order to capture recent temperature dynamics.
 \footnotetext{\url{http://www.gaussianprocess.org/gpml/code/matlab/doc/}}
 
 \subsection{Replication of results}
@@ -180,16 +198,13 @@ The method described above is implemented by the MATLAB script \texttt{predict\_
 
 \subsection{Discussion}
 
-The red curve in figure~\ref{fig:temp_pred} shows the result of the methodology applied to temperature station 1.
+The red curve in Figure~\ref{fig:temp_pred} shows the result of the methodology applied to temperature station 1.
 The fit to the data is far from perfect but it has captured the broad features of the data.
 I am unfamiliar with the temperature / weather forecasting literature but I am quite certain that far better methods exist!
 
-\section{Load forecasting overview}
+\section{Gradient boosting machines}
 
-My methodology for load back / forecasting was to try different general purpose regression algorithms and then ensemble (average) the predictions.
-The final ensemble comprised predictions from a gradient boosting machine, Gaussian process regression and the benchmark solution provided by the competition organisers (a linear model).
-
-\section{Gradient boosting machine}
+\label{sec:gbm}
 
 \subsection{Initial analysis and remarks}
 
@@ -231,13 +246,15 @@ The R script \texttt{basic\_gb.R} then performs the method described above to pr
 
 \subsection{Discussion}
 
-The time series for zone 10 had a very large discontinuity (see left of figure~\ref{fig:load}).
+The time series for zone 10 had a very large discontinuity (see left of Figure~\ref{fig:load}).
 GBM was used as a global prediction method which means it will have produced very bad predictions for zone 10.
 I later fixed this by modelling the loads either side of the discontinuity separately.
 Perversely, this resulted in a worse public test score.
 However, this change resulted in a much improved private test score; in hindsight I should have opted for the more reasonable model!
 
 \section{Gaussian processes}
+
+\label{sec:gp}
 
 \subsection{Initial analysis and remarks}
 
@@ -252,20 +269,20 @@ Three different kernel functions were used; one for backcasting, one for forecas
 The form of the three kernels used were as follows\footnotemark
 \footnotetext{See source code for parameter values}
 \begin{eqnarray}
-S_t + S_S + S_t \times S_T \times P_t \label{eqn:kernel1}\\
-S_t + S_t + P_t \label{eqn:kernel2}\\
-S_t + S_S + S_T \times P_t\label{eqn:kernel3}
+\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t \label{eqn:kernel1}\\
+\SE_t + \SE_t + \Per_t \label{eqn:kernel2}\\
+\SE_t + \SE_S + \SE_T \times \Per_t\label{eqn:kernel3}
 \end{eqnarray}
-where $S$ refers to a squared exponential kernel, $P$ is a periodic kernel and the subscripts indicate which dimension the kernel acts upon; (t)ime, (T)emperature or (S)moothed temperature.
+where $\SE$ refers to a squared exponential kernel, $\Per$ is a periodic kernel and the subscripts indicate which dimension the kernel acts upon; (t)ime, (T)emperature or (S)moothed temperature.
 For backcasting, the model was applied to the 1000 surrounding data points; for forecasting the last 500 data points were used.
 Only one temperature station was used in this method; for each back / forecasting region the marginal likelihood of the model was computed for each temperature station.
 Bayesian model averaging \citep[e.g.][]{Hoeting1999} was then used to combine the predictions (in practice, this was usually numerically equivalent to selecting the model / temperature station with the highest marginal likelihood).
 
 Kernel~\eqref{eqn:kernel1} encodes the assumptions that loads can be explained as a smoothly varying trend and an approximately periodic component.
 The smooth trend is the sum of a smooth function of smoothed temperature and a smooth function of time (to explain any deviations from the trend implied by temperature).
-The periodic component can vary through time and by being multiplied by $S_t$ and $S_T$ the shape of the periodicity will be more similar to recent times and points in time with similar temperatures.
+The periodic component can vary through time and by being multiplied by $\SE_t$ and $\SE_T$ the shape of the periodicity will be more similar to recent times and points in time with similar temperatures.
 This kernel was used for backcasting all zones apart from zone 9.
-An example of this kernel in action is shown in figure~\ref{fig:load_pred}.
+An example of this kernel in action is shown in Figure~\ref{fig:load_pred}.
 The left plot shows the load data (black) and the prediction (red).
 On the right is the temperature time series which resulted in the model with the highest marginal likelihood.
 Comparing the two plots we can see that the deviations of the prediction from the trend through time correspond to fluctuations in the temperature time series.
@@ -303,6 +320,8 @@ It is likely that better performance could have been achieved by a larger and mo
 
 \section{Selecting the final ensemble}
 
+\label{sec:ensemble}
+
 \subsection{Remarks}
 
 The final prediction was formed as the ensemble (weighted average) of predictions from three separate methods; gradient boosting machines, Gaussian process regression and the benchmark solution provided by the competition organisers (a linear model).
@@ -321,7 +340,7 @@ The public test scores did not vary considerably once sensible parameters had be
 
 The spreadsheets used to manipulate model output can be found in the folder \texttt{ensemble}.
 The spreadsheet \texttt{sub\_creator.xlsx} was used to convert (time) $\times$ (load zone) arrays of model output into the required format for submission.
-The output of this spreadsheet was then copied in \texttt{ensemble\_creator.xlsx} which performs the necessary averaging to produce ensembles of the predictions.
+The output of this spreadsheet was then copied in \texttt{ensemble\_creator.xlsx} which performs the averaging to produce ensembles of the predictions.
 
 \subsection{Discussion}
 
@@ -347,6 +366,8 @@ I would like to thank Alex Davies for guidance into the ways of data mining and 
 
 \section{A very brief introduction to Gaussian processes}
 
+\label{sec:gp_appendix}
+
 For a much richer introduction, see \cite{Rasmussen2006}.
 A Gaussian process, $(f(x))_{x \in X}$ is a set of random variables such that any finite collection has a jointly Gaussian distribution.
 A Gaussian process can be completely specified by a mean function $m(x)$ and kernel function $\kappa (x, x')$ such that
@@ -362,18 +383,18 @@ They are nonparametric and can learn any function given sufficient data.
   \begin{center}
     \input{include/GP_samples.tex}
   \end{center}
-  \caption{Top: Draws form a Gaussian process with squared exponential kernel with differing length scales. Bottom: Draws using a squared exponential and periodic product kernel.}
+  \caption{Left: Draws form a Gaussian process with squared exponential kernel with differing length scales. Right: Draws using a squared exponential and periodic product kernel.}
   \label{fig:gp_samples}
 \end{figure}
 
 The kernel function encodes the structure of a Gaussian process.
-The top plot in figure~\ref{fig:gp_samples} shows samples (random draws) from a Gaussian process distribution using squared exponential kernels; this function encodes an assumption of smoothness.
+The left plot in Figure~\ref{fig:gp_samples} shows samples (random draws) from a Gaussian process distribution using squared exponential kernels; this function encodes an assumption of smoothness.
 Intuitively, these plots show the types of functions that will most easily / quickly be learned using Gaussian process regression.
 One parameter of a squared exponential kernel is a length scale which controls how quickly the value of the Gaussian process varies.
-The blue line in the top plot has a short length scale which results in quick variations of the function.
+The blue line in the left plot has a short length scale which results in quick variations of the function.
 The green line has a long length scale and consequently the Gaussian process is visually much smoother.
 
-The bottom plot in figure~\ref{fig:gp_samples} shows samples from a Gaussian process with a more complicated kernel function.
+The right plot in Figure~\ref{fig:gp_samples} shows samples from a Gaussian process with a more complicated kernel function.
 The kernel function is the product of a squared exponential kernel and a periodic kernel.
 This encodes the assumption that the Gaussian process is roughly periodic, and that the shape of the periodicity changes smoothly.
 
