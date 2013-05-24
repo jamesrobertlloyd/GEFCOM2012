@@ -2,12 +2,12 @@
 
 %% Import load and temperature data
 
-data = importdata('Z_t_with_zeros.csv',',');
+data = importdata('load_input.csv',',');
 times = data(:,1);
 loads = data(:,2:end);
-data = importdata('GP_pred_temp_008.csv',',');
+data = importdata('GP_pred_temp.csv',',');
 temps = data(:,1:end);
-data = load('smooth_temp_GP_08.mat', 'smoothed');
+data = load('smooth_temp_GP.mat', 'smoothed');
 smooth_temps = data.smoothed;
 clear data
 
@@ -225,4 +225,4 @@ loads = loads + repmat(means, size(loads, 1), 1);
 
 %% Write to file
 
-csvwrite ('GP_pred_covElec07.csv', loads);
+csvwrite ('gp_pred', loads);

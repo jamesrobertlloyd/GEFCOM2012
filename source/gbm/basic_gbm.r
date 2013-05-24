@@ -1,6 +1,6 @@
 # Read data file
 
-X <- read.table('Z_t_T_no_year.csv', header = TRUE, sep = ',')
+X <- read.table('gbm_input.csv', header = TRUE, sep = ',')
 
 # Gradient boost it
 
@@ -18,6 +18,6 @@ for (index in 1:20)
 
 # Write output
 
-write.table(X, 'Z_t_T_no_year_pred.csv', sep = ',', row.names = FALSE)
+write.table(X, 'gbm_output.csv', sep = ',', row.names = FALSE)
 
 

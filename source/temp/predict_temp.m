@@ -127,8 +127,8 @@ for i = 1:11
   smoothed(:, i) = smooth.f;
 end
 
-save ('smooth_temp_GP_08.mat', 'smoothed');
-csvwrite ('smooth_temp_GP_08.csv', smoothed);
+save ('smooth_temp_GP.mat', 'smoothed');
+csvwrite ('smooth_temp_GP.csv', smoothed);
 
 %% Rescale the data
 
@@ -140,4 +140,4 @@ temps = temps + repmat(means, size(temps, 1), 1);
 
 %% Write to file
 
-csvwrite ('GP_pred_temp_008.csv', temps);
+csvwrite ('GP_pred_temp.csv', temps);

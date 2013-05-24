@@ -194,7 +194,7 @@ Only the last 250 data points (which corresponds approximately to 10 days) were 
 The spreadsheet and scripts used to manipulate the temperature data can be found in the folder \texttt{temp}.
 The MATLAB script makes use of the GPML toolbox which is contained in the folder \texttt{GPML}.
 The temperature data was reshaped into a (time) $\times$ (temperature station) array using the spreadsheet \texttt{temp.xlsx} and then saved in \texttt{times\_series\_raw.csv}.
-The method described above is implemented by the MATLAB script \texttt{predict\_temp\_v05.m} which saves the predicted time series in \texttt{GP\_pred\_temp\_008.csv} and the smoothing of these predictions in \texttt{smooth\_temp\_GP\_08.mat} and \texttt{smooth\_temp\_GP\_08.csv}.
+The method described above is implemented by the MATLAB script \texttt{predict\_temp.m} which saves the predicted time series in \texttt{GP\_pred\_temp.csv} and the smoothing of these predictions in \texttt{smooth\_temp\_GP.mat} and \texttt{smooth\_temp\_GP.csv}.
 
 \subsection{Discussion}
 
@@ -241,8 +241,8 @@ I experimented with other parameter values, using the public test score as a gui
 
 The scripts and data used can be found in the folder \texttt{gbm}.
 The load data was reshaped into a (time) $\times$ (load zone) array using the spreadsheet \texttt{load.xlsx} in the folder \texttt{load}.
-This was then concatenated with the temperature predictions and smoothed temperature predictions and saved in \texttt{Z\_t\_T\_no\_year.csv}.
-The R script \texttt{basic\_gb.R} then performs the method described above to produce predictions which are saved in \\ \texttt{basic\_gb\_Z\_t\_T\_no\_year\_pred.csv}.
+This was then concatenated with the temperature predictions and smoothed temperature predictions and saved in \texttt{gbm\_input.csv}.
+The R script \texttt{basic\_gbm.R} then performs the method described above to produce predictions which are saved in \texttt{gbm\_output.csv}.
 
 \subsection{Discussion}
 
@@ -307,10 +307,10 @@ The forms and parameters of the kernel functions (see the accompanying code for 
 \subsection{Replication of results}
 
 The spreadsheet and scripts used can be found in the folder \texttt{gp}.
-The load data was reshaped into a (time) $\times$ (load zone) array using the spreadsheet \texttt{load.xlsx} in the folder \texttt{load} and then saved in \texttt{Z\_t\_with\_zeros.csv} which encodes missing values as zeros.
-The outputs of the temperature prediction \texttt{GP\_pred\_temp\_008.csv} and \texttt{smooth\_temp\_GP\_08.mat} are used directly.
+The load data was reshaped into a (time) $\times$ (load zone) array using the spreadsheet \texttt{load.xlsx} in the folder \texttt{load} and then saved in \texttt{load\_input.csv} which encodes missing values as zeros.
+The outputs of the temperature prediction \texttt{GP\_pred\_temp.csv} and \texttt{smooth\_temp\_GP.mat} are used directly.
 
-The MATLAB script \texttt{gp\_elec\_predict\_load\_v04.m} performs the methodology described above, saving the predictions to\\ \texttt{gp\_elec\_GP\_pred\_covElec07.csv}.
+The MATLAB script \texttt{gp\_elec.m} performs the methodology described above, saving the predictions to \texttt{gp\_pred.csv}.
 
 \subsection{Discussion}
 
