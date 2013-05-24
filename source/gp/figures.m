@@ -259,7 +259,7 @@ for i = 1:1
         ylabel('Temperature (T06 standardised)')
         datetick('x', 'dd mmm yyyy', 'keeplimits');
         getframe;  
-        hold off;
+        
         save2pdf ('best_temp.pdf', h, 600);
 
         % Save
