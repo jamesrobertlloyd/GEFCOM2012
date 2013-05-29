@@ -1,11 +1,11 @@
-\documentclass[preprint,authoryear,12pt]{elsarticle}
+%\documentclass[preprint,authoryear,12pt]{elsarticle}
 
 %% Use the option review to obtain double line spacing
 %% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
 
 %% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
 %% for a journal layout:
-%% \documentclass[final,authoryear,1p,times]{elsarticle}
+\documentclass[final,authoryear,1p,times]{elsarticle}
 %% \documentclass[final,authoryear,1p,times,twocolumn]{elsarticle}
 %% \documentclass[final,authoryear,3p,times]{elsarticle}
 %% \documentclass[final,authoryear,3p,times,twocolumn]{elsarticle}
@@ -43,13 +43,13 @@
 \input{include/commenting.tex}
 
 %% For submission, make all render blank.
-%\renewcommand{\LATER}[1]{}
-%\renewcommand{\fLATER}[1]{}
-%\renewcommand{\TBD}[1]{}
-%\renewcommand{\fTBD}[1]{}
-%\renewcommand{\PROBLEM}[1]{}
-%\renewcommand{\fPROBLEM}[1]{}  
-%\renewcommand{\NA}[1]{#1}  %% Note, NA's pass through!
+\renewcommand{\LATER}[1]{}
+\renewcommand{\fLATER}[1]{}
+\renewcommand{\TBD}[1]{}
+\renewcommand{\fTBD}[1]{}
+\renewcommand{\PROBLEM}[1]{}
+\renewcommand{\fPROBLEM}[1]{}  
+\renewcommand{\NA}[1]{#1}  %% Note, NA's pass through!
 
 \newcommand{\acro}[1]{\textsc{#1}}
 \newcommand{\kSE}{{\acro{SE}}}
@@ -76,7 +76,7 @@
 %% use the ead command for the email address,
 %% and the form \ead[url] for the home page:
 %%
-\title{GEFCom2012 Load Forecasting \\ Gradient boosting machines and Gaussian processes}
+\title{GEFCom2012 Hierarchical Load Forecasting \\ Gradient boosting machines and Gaussian processes}
 %% \tnotetext[label1]{}
 \author{James~Robert~Lloyd}
 \ead{jrl44@cam.ac.uk}
@@ -158,7 +158,7 @@ The error metric used in GEFCom2012 was heavily weighted towards times at which 
 Consequently, good temperature predictions seemed crucial for overall success.
 
 When submitting a solution to Kaggle, the error metric was computed on 25\% of the held out data and returned to the user.
-This allowed a user to optimise temperature predictions by optimising the score of resulting load predicitions.
+This allowed a user to optimise temperature predictions by optimising the score of resulting load predicitions (\ie computing load predictions based on different temperature predictions and selecting the temperature prediction with the highest corresponding load prediction score).
 Depending on how the test data was split (into the 25\% test and 75\% validation partition) this may have allowed users to come very close to knowing the true future temperatures.
 
 \begin{figure}[ht]
@@ -223,7 +223,7 @@ We can see that that the load has a smoothly varying trend with roughly periodic
 The load also appears to be negatively correlated with temperature in this region of data.
 It is also reasonable to assume that load dynamics will be different on weekends compared to weekdays.
 
-Based on these observations, I used gradient boosting machines to model loads as a function of time of day, time within week, temperatures (all stations) and smoothed temperatures.
+Based on these observations, I modelled loads as a function of time of day, time within week, temperatures and smoothed temperatures (all stations).
 All zones were modelled independently for simplicity.
 
 \subsection{Methodology}
