@@ -1,0 +1,138 @@
+\input{../include/header_beamer}
+
+\usecolortheme{default}
+\xdefinecolor{Black}{rgb}{0,0,0}
+\xdefinecolor{White}{rgb}{1,1,1}
+\xdefinecolor{DarkBlue}{rgb}{0,0,.7}
+\xdefinecolor{DarkRed}{rgb}{.7,0,0}
+\xdefinecolor{Red}{rgb}{.85,0,0}
+\xdefinecolor{DarkGreen}{rgb}{0,.7,0}
+\xdefinecolor{DarkMagenta}{rgb}{.6,0,.6}
+\def\Black{\textcolor{Black}}
+\def\White{\textcolor{White}}
+\def\Blue{\textcolor{DarkBlue}}
+\def\Magenta{\textcolor{DarkMagenta}}
+\def\Red{\textcolor{Red}}
+\def\Green{\textcolor{DarkGreen}}
+\definecolor{camlightblue}{rgb}{0.601 , 0.8, 1}
+
+\input{../include/commenting.tex}
+
+%% For submission, make all render blank.
+%\renewcommand{\LATER}[1]{}
+%\renewcommand{\fLATER}[1]{}
+%\renewcommand{\TBD}[1]{}
+%\renewcommand{\fTBD}[1]{}
+%\renewcommand{\PROBLEM}[1]{}
+%\renewcommand{\fPROBLEM}[1]{}
+%\renewcommand{\NA}[1]{#1}  %% Note, NA's pass through!
+
+\usepackage{alltt}
+\usepackage{psfrag}
+\usepackage{pstool}
+\usepackage{multicol}
+
+\def\newarrow{\mbox{\begin{tikzpicture}
+             \useasboundingbox{(-3pt,-4.5pt) rectangle (19pt,1pt)};
+             \draw[->] (0,-0.07)--(17pt,-0.07);\end{tikzpicture}}}
+
+\title[] % (optional, use only with long paper titles)
+{GEFCom2012 Hierarchical load forecasting:\\Gradient boosting machines and Gaussian processes}
+
+\author % (optional, use only with lots of authors)
+{James Robert Lloyd}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[] % (optional, but mostly needed)
+{Machine Learning Group,\\Department of Engineering,\\University of Cambridge}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date % (optional)
+{July 2013}
+
+\subject{Talks}
+
+\usetikzlibrary{shapes.geometric,arrows,chains,matrix,positioning,scopes}
+ \makeatletter
+ \tikzset{join/.code=\tikzset{after node path={%
+       \ifx\tikzchainprevious\pgfutil@empty\else(\tikzchainprevious)%
+       edge[every join]#1(\tikzchaincurrent)\fi}}
+ }
+ \tikzset{>=stealth',every on chain/.append style={join},
+   every join/.style={->}
+ }
+
+\tikzstyle{mybox} = [draw=white, rectangle]
+\usepackage{ifthen}
+\usepackage{booktabs}
+
+% Custom definitions
+\def\simiid{\sim_{\mbox{\tiny iid}}}
+\def\ie{i.e.\ }
+\def\eg{e.g.\ }
+
+%%%%
+% Paper specific stuff
+%%%%
+
+\begin{document}
+
+\small
+%% { 
+%%   \setbeamertemplate{footline}{\empty}
+%%   \begin{frame}
+%%     \titlepage
+%%   \end{frame}
+%% }
+%\renewcommand{\inserttotalframenumber}{11}
+
+%\input{../include/defs}
+
+\begin{frame}
+  \begin{block}{}
+    \titlepage
+  \end{block}
+  \begin{center}
+    {\bf  Thanks to}\\
+    Alex Davies\\
+    David Duvenaud\\
+    Zoubin Ghahramani
+  \end{center}
+\end{frame}
+
+\begin{frame}{Overview of techniques}
+  \begin{block}{Temperature forecasting}
+    %\vspace{\baselineskip}
+    \begin{itemize}
+      \item Gaussian process (GP) regression
+    \end{itemize}
+  \end{block}
+  \vspace{\baselineskip}
+  \begin{block}{Load back/forecasting}
+    %\vspace{\baselineskip}
+    \begin{itemize}
+      \item Gradient boosting machine (GBM) regression
+      \item Gaussian process (GP) regression
+      \item Linear regression (benchmark solution)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Regression on time}
+  \ie Not regressing on previous values. Not necessarily better, but it worked.
+\end{frame}
+
+{
+\section{References}
+\section{Extended Bibliography}
+\tiny
+\begin{frame}[allowframebreaks,plain]
+  \frametitle{References}
+  \bibliography{library}
+  \bibliographystyle{alpha}
+\end{frame}
+}
+
+\end{document}
