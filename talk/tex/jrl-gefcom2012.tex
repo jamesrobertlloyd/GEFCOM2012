@@ -113,15 +113,71 @@
   \begin{block}{Load back/forecasting}
     %\vspace{\baselineskip}
     \begin{itemize}
-      \item Gradient boosting machine (GBM) regression
+      \item Gradient boosting machine (GBM) regression (show percentage of ensemble)
       \item Gaussian process (GP) regression
       \item Linear regression (benchmark solution)
     \end{itemize}
   \end{block}
+  Mention the GP regression was not brilliant but was sufficiently uncorrelated
 \end{frame}
 
 \begin{frame}{Regression on time}
   \ie Not regressing on previous values. Not necessarily better, but it worked.
+\end{frame}
+
+\begin{frame}{GBM regression}
+  Introduce notation - just using it as a generic function approximator
+\end{frame}
+
+\begin{frame}{GBM regression}
+  Show a picture of it actually working - perhaps with discontinuity - highlighting problem with approach
+\end{frame}
+
+\begin{frame}{Gaussian process regression}
+  Intro - Bayesian nonparametric smoothing technique
+  
+  A few people using structured kernels
+\end{frame}
+
+\begin{frame}{Prior on functions}
+  Show draws from squared exp kernel
+\end{frame}
+
+\begin{frame}{Analytic posterior}
+  Show standard conditioning on some points pictures
+\end{frame}
+
+\begin{frame}{Smoothing not enough}
+  Show example extrapolation on load data - not enough
+\end{frame}
+
+\begin{frame}{Smoothing not enough}
+  Show example extrapolation on load data - not enough even with temperature
+\end{frame}
+
+\begin{frame}{Structured kernels}
+  Show some toy examples
+\end{frame}
+
+\begin{frame}{Structured kernels}
+  Show examples used in competition
+\end{frame}
+
+\begin{frame}{Structured kernels}
+  Show example figure of interpolation
+\end{frame}
+
+\begin{frame}{Structured kernels}
+  Shameless plug - any time for analysis
+\end{frame}
+
+\begin{frame}{Structured kernels for temperature as well}
+  Show examples - mention that I split up the modelling of trend and periodicity - mostly through naivety.
+\end{frame}
+
+\begin{frame}{Ensembling}
+  Show performance of individual components - and correlations of predictions?
+  Plug Bayesian optimisation (don't forget Phil Hennig's most recent work)
 \end{frame}
 
 {
