@@ -129,7 +129,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{Summary of results}
+\begin{frame}{Performance of Different Components}
   \begin{center}
     \begin{tabular}{lcc|ccc}
       Method &&&&& Validation score\\\\
@@ -144,16 +144,19 @@
 \end{frame}
 
 \begin{frame}{Notation}
-  \begin{center}
-    \begin{tabular}{lcccl}
-      $t$ &&&& Time \\\\
-      $T$ &&&& Temperature \\\\
-      $S$ &&&& Kernel smoothed temperature \\\\
-      $Z$ &&&& Load \\\\
-      $f,g$ &&&& Generic functions \\\\
-      $\varepsilon$ &&&& Generic error
-    \end{tabular}
-  \end{center}
+    \begin{itemize}
+      \item $t$ --- Time
+      \vspace{\baselineskip}
+      \item $T$ --- Temperature
+      \vspace{\baselineskip}
+      \item $S$ --- Kernel smoothed temperature
+      \vspace{\baselineskip}
+      \item $Z$ --- Load
+      \vspace{\baselineskip}
+      \item $f,g$ --- Generic functions
+      \vspace{\baselineskip}
+      \item $\varepsilon$ --- Generic error
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Main approach - regression on time and temp.}
@@ -171,11 +174,11 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{GBM regression}
+\begin{frame}{GBM regression - overview}
   \begin{block}{Used as a regression `black-box'}
     \begin{itemize}
-      \item Boosted decision trees
-      \item Also employs bagging
+      \item Bagged and boosted decision trees
+      \item Used standard R implementation with most default parameters unchanged
     \end{itemize}
   \end{block}
   \begin{block}{Output}
@@ -193,14 +196,20 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{GBM regression}
-  Mention how I chose parameters
+\begin{frame}{GBM regression - parameter selection}
+  \begin{itemize}
+    \item Ideally would have performed grid searches over parameter values using cross validated error as metric
+    \vspace{\baselineskip}
+    \item In practice, partial grid searches combined with intuition, using out of bag errors and validation score on Kaggle
+    \vspace{\baselineskip}
+    \item 10,000 trees, interaction depth of 3 and shrinkage factor of 0.01 (other values set to defaults of R implementation)
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{GBM regression}
   \begin{centering}
     \input{../include/gbm}
-    Only slight discontinuity between prediction and ground truth
+    Only slight discontinuity between prediction and ground truth despite no modelling assumptions of continuity
   \end{centering}
 \end{frame}
 
@@ -222,16 +231,13 @@
   \end{centering}
 \end{frame}
 
-\frame[plain]{
-\frametitle{Conditional Posterior}
+\begin{frame}{Conditional Posterior}
+  \begin{align*}
+    f(x^*) | X, y \sim \mathcal{N}( & k( x^*, X ) K^{-1} y, \\
+    & k( x^*, x^* ) - k( x^*, X ) K^{-1} k( X, x^* ) )
+  \end{align*}
 
-\begin{align*}
-f(x^*) | X, y \sim \mathcal{N}( & k( x^*, X ) K^{-1} y, \\
-& k( x^*, x^* ) - k( x^*, X ) K^{-1} k( X, x^* ) )
-\end{align*}
-
-
-With SE kernel:
+  With SE kernel:
     \begin{figure}
         \includegraphics<1>[width=6cm]{../include/gp_demo/1d_posterior_and_0_data}
         \includegraphics<2>[width=6cm]{../include/gp_demo/1d_posterior_and_1_data}
@@ -239,62 +245,126 @@ With SE kernel:
         \includegraphics<4>[width=6cm]{../include/gp_demo/1d_posterior_and_3_data}
         \includegraphics<5>[width=6cm]{../include/gp_demo/1d_posterior_and_4_data}
     \end{figure}
-}
-
-\frame[plain]{
-\frametitle{Smoothing not always enough}
-\begin{itemize} 
-	\item SE kernel $\rightarrow$ basic smoothing.
-	\item Richer kernels means richer structure can be captured.
-\end{itemize}
-\begin{center}
-  \input{../include/fig_synth_extrap.tex}
-\end{center}
-}
-
-\begin{frame}{Smoothing not enough}
-  Show an example from the competition data
 \end{frame}
 
-\frame[plain]{
-\frametitle{Kernel Choice is Important}
-\begin{itemize} 
-	\item Kernel determines almost all the properties of the prior.
+\begin{frame}{Need more than just a smoothing device}
+  \begin{center}
+    \input{../include/fig_synth_extrap_bad.tex}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Need more than just a smoothing device}
+  \begin{center}
+    \input{../include/load_pred_SE}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Need more than just a smoothing device}
+  \begin{center}
+    \input{../include/load_pred_SEard}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Can encode structural assumptions in kernel}
+  \begin{itemize} 
+	\item Kernel determines the structural properties of a Gaussian process
 	\item Many different kinds, with very different properties:
-\input{../include/tables/simple_kernels_table_v3}
-\end{itemize}
-}
-
-
-\frame[plain]{
-\frametitle{Kernels can be composed}
-\begin{itemize} 
-	\item Two main operations: adding, multiplying
-	\input{../include/tables/comp1}
-\end{itemize}
-}
-
-\begin{frame}{Structured kernels}
-  Show draws from prior of those used in competition
+  \end{itemize}
+  \input{../include/tables/simple_kernels_table_v3}
 \end{frame}
 
-\begin{frame}{Structured kernels}
+
+\begin{frame}{Kernels can be composed}
+  \begin{itemize} 
+	\item Two main operations: adding, multiplying
+  \end{itemize}
+  \input{../include/tables/comp1}
+\end{frame}
+
+\begin{frame}{A better prior}
+  \begin{itemize}
+    \item Used kernels of the form $\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t$
+    \item Encodes assumptions of continuity and daily periodicity that is affected by temperature
+  \end{itemize}
+  \begin{centering}
+    \input{../include/structured_prior}
+  \end{centering}
+\end{frame}
+
+\begin{frame}{A better prior}
   \begin{centering}
     \input{../include/load_pred}
   \end{centering}
 \end{frame}
 
-\begin{frame}{Structured kernels}
-  Shameless plug - any time for analysis
+\begin{frame}{GP regression - parameter selection}
+  \begin{itemize}
+    \item Marginal likelihood of GP models differentiable with respect to hyper-parameters and hence can be optimised using gradient based optimisation techniques
+    \vspace{\baselineskip}
+    \item In practice, marginal likelihood optimisation can fail
+    \begin{itemize}
+      \item Can result in slight over fitting
+      \item When the prior and data generation process are very dissimilar, Bayesian inference can give misleading results
+    \end{itemize}
+    \vspace{\baselineskip}
+    \item In practice, parameter selection was a mixture of marginal likelihood optimisation, validation score maximisation and model checking (plotting graphs)
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Structured kernels for temperature as well}
-  Show examples - mention that I split up the modelling of trend and periodicity - mostly through naivety.
+\begin{frame}{Competition inspired new GP research}
+  \begin{itemize}
+    \item Creating custom composite kernels not a new idea, but typically only practised by GP / kernel learning experts
+    \vspace{\baselineskip}
+    \item After competition, automated the process of kernel / model construction \cite{duvenaud2013structure} based on an idea by \cite{Grosse2012} in the context of matrix factorisation
+    \vspace{\baselineskip}
+    \item Ongoing research to see how far the automatic model construction idea can be pushed \eg
+  \end{itemize}
+  \begin{tabular}{ccc}
+\hspace{-0.5cm}\includegraphics[width=0.33\textwidth]{figures/internet-traffic-data-in-bits-fr/internet-traffic-data-in-bits-fr_all} &
+\includegraphics[width=0.32\textwidth]{figures/weekday-bus-ridership-iowa-city-/weekday-bus-ridership-iowa-city-_all} & 
+\includegraphics[width=0.32\textwidth]{figures/monthly-production-of-gas-in-aus/monthly-production-of-gas-in-aus_all} \\
+\hspace{-0.5cm}\includegraphics[width=0.33\textwidth]{figures/monthly-us-female-20-years-and-o/monthly-us-female-20-years-and-o_all} &
+\includegraphics[width=0.32\textwidth]{figures/monthly-canadian-total-unemploym/monthly-canadian-total-unemploym_all} & 
+\includegraphics[width=0.32\textwidth]{figures/monthly-sales-of-us-houses-thous/monthly-sales-of-us-houses-thous_all}
+  \end{tabular}
+\end{frame}
+
+\begin{frame}{Structured kernels for temp.\ forecasts}
+  \begin{itemize}
+    \item Assumed that Temperature = Smoothed historical average + Smooth long-term deviations + Daily periodicity
+  \end{itemize}
+  \begin{center}
+    \input{../include/temp_pred}
+  \end{center}
 \end{frame}
 
 \begin{frame}{Ensembling}
-  Show performance of individual components - and correlations of predictions?
-  Plug Bayesian optimisation (don't forget Phil Hennig's most recent work)
+  \begin{block}{Small search over possible weightings}
+    \begin{center}
+      \scriptsize
+      \begin{tabular}{cccc|c}
+        GBM & GP & RF & LM & Score \\
+        \hline
+        100 & 0 & 0 & 0 & 72,968 \\
+        0 & 100 & 0 & 0 & 99,787 \\
+        0 & 0 & 100 & 0 & 89,457 \\
+        0 & 0 & 0 & 100 & 112,547 \\
+        80 & 20 & 0 & 0 & 71,683 \\
+        70 & 30 & 0 & 0 & 72,485 \\
+        90 & 10 & 0 & 0 & 71,846 \\
+        85 & 15 & 0 & 0 & 71,644 \\
+        \bf{76} & \bf{14} & \bf{0} & \bf{10} & \bf{71,164} \\
+        72 & 13 & 10 & 5 & 71,566 \\
+        80 & 0 & 20 & 10 & 74,293 \\
+      \end{tabular}
+    \end{center}
+  \end{block}
+  \begin{block}{More principled methods}
+    \begin{itemize}
+      \item Grid searches and cross validation - but could be costly to retrain algorithms on different training / test splits
+      \item Bayesian optimisation \cite{Osborne2009}, \cite{snoek2012practical}, \cite{Hennig} can be more appropriate when individual evaluations costly (\eg submitting to Kaggle to obtain validation score)
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 {

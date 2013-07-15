@@ -266,6 +266,10 @@ for i = 1:1
 
         loads(test_indices, i) = av_prediction(1:length(test_indices));
         
+        % Now plot obviously bad examples
+        
+        
+        
         % Wait so we can see what's happening
         pause (1);
         break;
@@ -275,3 +279,131 @@ for i = 1:1
     end
   end
 end
+
+%% Now plot obviously bad predictions
+
+t_i = best_i;
+
+train_times = [times((start_index - window):(start_index)) ; ...
+               times((end_index):(end_index + window))];
+train_loads = [loads((start_index - window):(start_index), i) ; ...
+               loads((end_index):(end_index + window), i)];
+train_temps = [temps((start_index - window):(start_index), t_i) ; ...
+               temps((end_index):(end_index + window), t_i)];
+train_smooth_temps = [smooth_temps((start_index - window):(start_index), t_i) ; ...
+               smooth_temps((end_index):(end_index + window), t_i)];
+test_times  = times((start_index+1):(end_index-1));
+test_temps  = temps((start_index+1):(end_index-1), t_i);
+test_smooth_temps  = smooth_temps((start_index+1):(end_index-1), t_i);
+test_indices = (start_index+1):(end_index-1);
+all_times = [times((start_index - window):(end_index + window))];
+all_temps = [temps((start_index - window):(end_index + window),:)];
+
+x = [train_times train_smooth_temps train_temps];
+x_test = [test_times test_smooth_temps test_temps];
+y = train_loads;
+
+meanfunc = @meanZero;
+hyp.mean = [];
+covfunc = {@covMask, {[1, 0, 0], @covSEiso}};
+hyp.cov = [0;0];
+hyp_opt = minimize(hyp, @gp, -100, @infExact, meanfunc, covfunc, likfunc, ...
+                 x, y);
+
+[m, ~] = gp(hyp_opt, @infExact, meanfunc, covfunc, likfunc, x, y, [x_test ; x]);
+
+h = figure;
+plot (train_times(1:(window+1)) + date_offset, train_loads(1:(window+1)), 'k-', 'LineWidth', 2);
+hold on
+if ~forecast
+  plot (train_times((window+2):end) + date_offset, train_loads((window+2):end), 'k-', 'LineWidth', 2);
+end
+plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
+plot ([min(test_times) + date_offset, min(test_times) + date_offset], [-1, 3], 'k--');
+plot ([max(test_times) + date_offset, max(test_times) + date_offset], [-1, 3], 'k--');
+xlim ([times(start_index+1)-5 + date_offset, times(end_index-1)+5 + date_offset]);
+ylim ([-1, 3]);
+xlabel('Time')
+ylabel('Load (Z01 standardised)')
+datetick('x', 'dd mmm yyyy', 'keeplimits');
+getframe;  
+hold off
+getframe;  
+save2pdf ('load_pred_SE.pdf', h, 600);
+
+%% Now plot obviously bad predictions v2
+
+t_i = best_i;
+
+train_times = [times((start_index - window):(start_index)) ; ...
+               times((end_index):(end_index + window))];
+train_loads = [loads((start_index - window):(start_index), i) ; ...
+               loads((end_index):(end_index + window), i)];
+train_temps = [temps((start_index - window):(start_index), t_i) ; ...
+               temps((end_index):(end_index + window), t_i)];
+train_smooth_temps = [smooth_temps((start_index - window):(start_index), t_i) ; ...
+               smooth_temps((end_index):(end_index + window), t_i)];
+test_times  = times((start_index+1):(end_index-1));
+test_temps  = temps((start_index+1):(end_index-1), t_i);
+test_smooth_temps  = smooth_temps((start_index+1):(end_index-1), t_i);
+test_indices = (start_index+1):(end_index-1);
+all_times = [times((start_index - window):(end_index + window))];
+all_temps = [temps((start_index - window):(end_index + window),:)];
+
+x = [train_times train_smooth_temps train_temps];
+x_test = [test_times test_smooth_temps test_temps];
+y = train_loads;
+
+meanfunc = @meanZero;
+hyp.mean = [];
+covfunc = {@covSum, {{@covMask, {[1, 0, 0], @covSEiso}}, {@covMask, {[0, 1, 0], @covSEiso}}, {@covMask, {[0, 0, 1], @covSEiso}}}};
+hyp.cov = [0;0;0;0;0;0];
+%covfunc = {@covSEard};
+%hyp.cov = [0;1;1;0];
+hyp_opt = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, ...
+                 x, y);
+
+[m, ~] = gp(hyp_opt, @infExact, meanfunc, covfunc, likfunc, x, y, [x_test ; x]);
+
+h = figure;
+plot (train_times(1:(window+1)) + date_offset, train_loads(1:(window+1)), 'k-', 'LineWidth', 2);
+hold on
+if ~forecast
+  plot (train_times((window+2):end) + date_offset, train_loads((window+2):end), 'k-', 'LineWidth', 2);
+end
+plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
+plot ([min(test_times) + date_offset, min(test_times) + date_offset], [-1, 3], 'k--');
+plot ([max(test_times) + date_offset, max(test_times) + date_offset], [-1, 3], 'k--');
+xlim ([times(start_index+1)-5 + date_offset, times(end_index-1)+5 + date_offset]);
+ylim ([-1, 3]);
+xlabel('Time')
+ylabel('Load (Z01 standardised)')
+datetick('x', 'dd mmm yyyy', 'keeplimits');
+getframe;  
+hold off
+getframe;  
+save2pdf ('load_pred_SEard.pdf', h, 600);
+
+%% Draw from kernel
+
+covfunc = @covElec02;
+hyp.cov = [log(2) ; log(0.3) ; 
+         log(0.5) ; log(0.5) ;
+         log(0.5) ; log(0.5) ;
+         log(2) ; log(0.5) ; 
+         log(0.4) ; log(1) ; log(1)];
+K = feval(covfunc, hyp.cov, [x_test]);
+K = K + 10e-5*max(max(K));
+m = chol(K)' * randn(size(K,1),1);
+
+h = figure;
+plot (test_times + date_offset, m(1:length(test_times)), 'b-', 'LineWidth', 1);
+hold on
+xlim ([min(test_times) + date_offset, max(test_times) + date_offset]);
+xlabel('')
+ylabel('')
+set(gca, 'XTick', []);
+getframe;  
+hold off
+getframe;  
+save2pdf ('fancy_kernel_draw4.pdf', h, 600);
