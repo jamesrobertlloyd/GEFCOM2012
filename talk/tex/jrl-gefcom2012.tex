@@ -31,6 +31,8 @@
 \usepackage{psfrag}
 \usepackage{pstool}
 \usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{preamble}
 
 \def\newarrow{\mbox{\begin{tikzpicture}
              \useasboundingbox{(-3pt,-4.5pt) rectangle (19pt,1pt)};
@@ -103,6 +105,13 @@
 \end{frame}
 
 \begin{frame}{Overview of techniques}
+  \begin{block}{Preprocessing}
+    %\vspace{\baselineskip}
+    \begin{itemize}
+      \item Kernel smoothing of temperatures
+    \end{itemize}
+  \end{block}
+  \vspace{\baselineskip}
   \begin{block}{Temperature forecasting}
     %\vspace{\baselineskip}
     \begin{itemize}
@@ -113,58 +122,166 @@
   \begin{block}{Load back/forecasting}
     %\vspace{\baselineskip}
     \begin{itemize}
-      \item Gradient boosting machine (GBM) regression (show percentage of ensemble)
-      \item Gaussian process (GP) regression
-      \item Linear regression (benchmark solution)
+      \item Gradient boosting machine (GBM) regression  - 76\%
+      \item Gaussian process (GP) regression - 14\%
+      \item Linear regression (benchmark solution) - 10\%
     \end{itemize}
   \end{block}
-  Mention the GP regression was not brilliant but was sufficiently uncorrelated
 \end{frame}
 
-\begin{frame}{Regression on time}
-  \ie Not regressing on previous values. Not necessarily better, but it worked.
+\begin{frame}{Summary of results}
+  \begin{center}
+    \begin{tabular}{lcc|ccc}
+      Method &&&&& Validation score\\\\
+      \hline\\
+      GBM &&&&& 72,968 \\\\
+      GP &&&&& 99,787 \\\\
+      LR &&&&& 112,547 \\\\
+      \hline\\
+      Ensemble &&&&& 71,164
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Notation}
+  \begin{center}
+    \begin{tabular}{lcccl}
+      $t$ &&&& Time \\\\
+      $T$ &&&& Temperature \\\\
+      $S$ &&&& Kernel smoothed temperature \\\\
+      $Z$ &&&& Load \\\\
+      $f,g$ &&&& Generic functions \\\\
+      $\varepsilon$ &&&& Generic error
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Main approach - regression on time and temp.}
+  \begin{block}{Modelling temperatures and loads as functions of time and temperature}
+    \begin{eqnarray*}
+      T(t) & = & f(t) + \varepsilon^T_t \\
+      \\
+      Z(t) & = & g(t, T(t), S(t)) + \varepsilon^Z_t \\
+    \end{eqnarray*}
+  \end{block}
+  \begin{block}{\ie no explicit autoregressive components \eg}
+    \begin{eqnarray*}
+      y(t+1) & = & f(y(t)) + \varepsilon_t
+    \end{eqnarray*}
+  \end{block}
 \end{frame}
 
 \begin{frame}{GBM regression}
-  Introduce notation - just using it as a generic function approximator
+  \begin{block}{Used as a regression `black-box'}
+    \begin{itemize}
+      \item Boosted decision trees
+      \item Also employs bagging
+    \end{itemize}
+  \end{block}
+  \begin{block}{Output}
+  	\begin{itemize}
+      \item $Z_i$ \ie each load zone modelled in isolation
+    \end{itemize}
+  \end{block}
+  \begin{block}{Inputs}
+    \begin{itemize}
+      \item Time of day
+      \item Time within week
+      \item Temperatures (all stations)
+      \item Smoothed temperatures (all stations)
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \begin{frame}{GBM regression}
-  Show a picture of it actually working - perhaps with discontinuity - highlighting problem with approach
+  Mention how I chose parameters
+\end{frame}
+
+\begin{frame}{GBM regression}
+  \begin{centering}
+    \input{../include/gbm}
+    Only slight discontinuity between prediction and ground truth
+  \end{centering}
 \end{frame}
 
 \begin{frame}{Gaussian process regression}
-  Intro - Bayesian nonparametric smoothing technique
-  
-  A few people using structured kernels
+  \begin{itemize}
+    \item A Bayesian nonparametric method for regression
+    \vspace{\baselineskip}
+    \item Places a prior on functions
+    \vspace{\baselineskip}
+    \item Typically used as a smoothing device by choosing a default \emph{kernel}
+    \vspace{\baselineskip}
+    \item Data exhibiting high level structure (\eg periodicity) can be modelled using more advanced kernels
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Prior on functions}
-  Show draws from squared exp kernel
+  \begin{centering}
+    \input{../include/SE}
+  \end{centering}
 \end{frame}
 
-\begin{frame}{Analytic posterior}
-  Show standard conditioning on some points pictures
-\end{frame}
+\frame[plain]{
+\frametitle{Conditional Posterior}
+
+\begin{align*}
+f(x^*) | X, y \sim \mathcal{N}( & k( x^*, X ) K^{-1} y, \\
+& k( x^*, x^* ) - k( x^*, X ) K^{-1} k( X, x^* ) )
+\end{align*}
+
+
+With SE kernel:
+    \begin{figure}
+        \includegraphics<1>[width=6cm]{../include/gp_demo/1d_posterior_and_0_data}
+        \includegraphics<2>[width=6cm]{../include/gp_demo/1d_posterior_and_1_data}
+        \includegraphics<3>[width=6cm]{../include/gp_demo/1d_posterior_and_2_data}
+        \includegraphics<4>[width=6cm]{../include/gp_demo/1d_posterior_and_3_data}
+        \includegraphics<5>[width=6cm]{../include/gp_demo/1d_posterior_and_4_data}
+    \end{figure}
+}
+
+\frame[plain]{
+\frametitle{Smoothing not always enough}
+\begin{itemize} 
+	\item SE kernel $\rightarrow$ basic smoothing.
+	\item Richer kernels means richer structure can be captured.
+\end{itemize}
+\begin{center}
+  \input{../include/fig_synth_extrap.tex}
+\end{center}
+}
 
 \begin{frame}{Smoothing not enough}
-  Show example extrapolation on load data - not enough
+  Show an example from the competition data
 \end{frame}
 
-\begin{frame}{Smoothing not enough}
-  Show example extrapolation on load data - not enough even with temperature
+\frame[plain]{
+\frametitle{Kernel Choice is Important}
+\begin{itemize} 
+	\item Kernel determines almost all the properties of the prior.
+	\item Many different kinds, with very different properties:
+\input{../include/tables/simple_kernels_table_v3}
+\end{itemize}
+}
+
+
+\frame[plain]{
+\frametitle{Kernels can be composed}
+\begin{itemize} 
+	\item Two main operations: adding, multiplying
+	\input{../include/tables/comp1}
+\end{itemize}
+}
+
+\begin{frame}{Structured kernels}
+  Show draws from prior of those used in competition
 \end{frame}
 
 \begin{frame}{Structured kernels}
-  Show some toy examples
-\end{frame}
-
-\begin{frame}{Structured kernels}
-  Show examples used in competition
-\end{frame}
-
-\begin{frame}{Structured kernels}
-  Show example figure of interpolation
+  \begin{centering}
+    \input{../include/load_pred}
+  \end{centering}
 \end{frame}
 
 \begin{frame}{Structured kernels}

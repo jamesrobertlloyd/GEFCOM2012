@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+  \begin{scope}[xshift=0]
+    \begin{scope}[yshift=0]
+      \node [mybox] (box){
+        \includegraphics[width=0.35\textwidth]{../include/simple_draw.pdf}
+      };
+    \end{scope}
+    \begin{scope}[yshift=0.35\textwidth]
+      \node [mybox] (box){
+        \includegraphics[width=0.35\textwidth]{../include/simple_draw2.pdf}
+      };
+    \end{scope}
+  \end{scope}
+  \begin{scope}[xshift=0.5\textwidth]
+    \begin{scope}[yshift=0]
+      \node [mybox] (box){
+        \includegraphics[width=0.35\textwidth]{../include/simple_draw3.pdf}
+      };
+    \end{scope}
+    \begin{scope}[yshift=0.35\textwidth]
+      \node [mybox] (box){
+        \includegraphics[width=0.35\textwidth]{../include/simple_draw4.pdf}
+      };
+    \end{scope}
+  \end{scope}
+\end{tikzpicture}
