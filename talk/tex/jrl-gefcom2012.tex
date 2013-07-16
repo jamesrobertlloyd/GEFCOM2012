@@ -143,21 +143,21 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Notation}
-    \begin{itemize}
-      \item $t$ --- Time
-      \vspace{\baselineskip}
-      \item $T$ --- Temperature
-      \vspace{\baselineskip}
-      \item $S$ --- Kernel smoothed temperature
-      \vspace{\baselineskip}
-      \item $Z$ --- Load
-      \vspace{\baselineskip}
-      \item $f,g$ --- Generic functions
-      \vspace{\baselineskip}
-      \item $\varepsilon$ --- Generic error
-    \end{itemize}
-\end{frame}
+%\begin{frame}{Notation}
+%  \begin{itemize}
+%    \item $t$ --- Time
+%    \vspace{\baselineskip}
+%    \item $T$ --- Temperature
+%    \vspace{\baselineskip}
+%    \item $S$ --- Kernel smoothed temperature
+%    \vspace{\baselineskip}
+%    \item $Z$ --- Load
+%    \vspace{\baselineskip}
+%    \item $f,g$ --- Generic functions
+%    \vspace{\baselineskip}
+%    \item $\varepsilon$ --- Generic error
+%  \end{itemize}
+%\end{frame}
 
 \begin{frame}{Main approach - regression on time and temp.}
   \begin{block}{Modelling temperatures and loads as functions of time and temperature}
@@ -171,6 +171,9 @@
     \begin{eqnarray*}
       y(t+1) & = & f(y(t)) + \varepsilon_t
     \end{eqnarray*}
+  \end{block}
+  \begin{block}{Notation}
+    $t$ --- Time, $T$ --- Temperature, $S$ --- Kernel smoothed temperature, $Z$ --- Load, $f,g$ --- Generic functions, $\varepsilon$ --- Generic error
   \end{block}
 \end{frame}
 
@@ -207,6 +210,7 @@
 \end{frame}
 
 \begin{frame}{GBM regression}
+  \TBD{Use more colours - don't make it continuous}
   \begin{centering}
     \input{../include/gbm}
     Only slight discontinuity between prediction and ground truth despite no modelling assumptions of continuity
@@ -217,12 +221,16 @@
   \begin{itemize}
     \item A Bayesian nonparametric method for regression
     \vspace{\baselineskip}
-    \item Places a prior on functions
+    \item Places a prior on functions but equivalent to linear regression in an (infinite dimensional) feature space
     \vspace{\baselineskip}
     \item Typically used as a smoothing device by choosing a default \emph{kernel}
     \vspace{\baselineskip}
     \item Data exhibiting high level structure (\eg periodicity) can be modelled using more advanced kernels
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Bayesian modelling}
+  Write down Bayes rule and a few stylized facts \ie rational when your prior is correct, but getting the correct prior crucial
 \end{frame}
 
 \begin{frame}{Prior on functions}
@@ -232,12 +240,13 @@
 \end{frame}
 
 \begin{frame}{Conditional Posterior}
-  \begin{align*}
-    f(x^*) | X, y \sim \mathcal{N}( & k( x^*, X ) K^{-1} y, \\
-    & k( x^*, x^* ) - k( x^*, X ) K^{-1} k( X, x^* ) )
-  \end{align*}
+  %\begin{align*}
+  %  f(x^*) | X, y \sim \mathcal{N}( & k( x^*, X ) K^{-1} y, \\
+  %  & k( x^*, x^* ) - k( x^*, X ) K^{-1} k( X, x^* ) )
+  %\end{align*}
 
-  With SE kernel:
+  %With SE kernel:
+  After observing data, Bayes rule provides a formula by which to update our beliefs about a function
     \begin{figure}
         \includegraphics<1>[width=6cm]{../include/gp_demo/1d_posterior_and_0_data}
         \includegraphics<2>[width=6cm]{../include/gp_demo/1d_posterior_and_1_data}
@@ -356,15 +365,26 @@
         \bf{76} & \bf{14} & \bf{0} & \bf{10} & \bf{71,164} \\
         72 & 13 & 10 & 5 & 71,566 \\
         80 & 0 & 20 & 10 & 74,293 \\
+        \ldots & \ldots & \ldots & \ldots & \ldots
       \end{tabular}
     \end{center}
   \end{block}
   \begin{block}{More principled methods}
     \begin{itemize}
       \item Grid searches and cross validation - but could be costly to retrain algorithms on different training / test splits
-      \item Bayesian optimisation \cite{Osborne2009}, \cite{snoek2012practical}, \cite{Hennig} can be more appropriate when individual evaluations costly (\eg submitting to Kaggle to obtain validation score)
+      \item Bayesian optimisation \cite{Osborne2009}, \cite{snoek2012practical}, \cite{HennigSchuler2012} can be more appropriate when individual evaluations costly (\eg submitting to Kaggle to obtain validation score)
     \end{itemize}
   \end{block}
+\end{frame}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Main approach was to regress loads on time and temperature, rather than using an autoregressive model
+    \vspace{2\baselineskip}
+    \item GBM provided the majority of performance
+    \vspace{2\baselineskip}
+    \item Structured kernel GP method sufficiently uncorrelated to provide useful component in ensemble
+  \end{itemize}
 \end{frame}
 
 {
