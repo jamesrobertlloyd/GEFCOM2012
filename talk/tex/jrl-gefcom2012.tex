@@ -293,7 +293,7 @@
 \begin{frame}{A better prior}
   \begin{itemize}
     \item Used kernels of the form $\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t$
-    \item Encodes assumptions of continuity and daily periodicity that is affected by temperature
+    \item This encodes the assumption that Load = Smooth function of time + Smooth function of smoothed temperatures + Periodic function of time that varies smoothly over time and with changing temperature
   \end{itemize}
   \begin{centering}
     \input{../include/structured_prior}
@@ -308,9 +308,9 @@
 
 \begin{frame}{GP regression - parameter selection}
   \begin{itemize}
-    \item Marginal likelihood of GP models differentiable with respect to hyper-parameters and hence can be optimised using gradient based optimisation techniques
+    \item Can optimise marginal likelihood (a balance of model fit and complexity) with gradient based optimisation
     \vspace{\baselineskip}
-    \item In practice, marginal likelihood optimisation can fail
+    \item Marginal likelihood optimisation can fail
     \begin{itemize}
       \item Can result in slight over fitting
       \item When the prior and data generation process are very dissimilar, Bayesian inference can give misleading results
