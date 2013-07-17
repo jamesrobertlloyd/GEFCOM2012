@@ -210,10 +210,9 @@
 \end{frame}
 
 \begin{frame}{GBM regression}
-  \TBD{Use more colours - don't make it continuous}
   \begin{centering}
     \input{../include/gbm}
-    Only slight discontinuity between prediction and ground truth despite no modelling assumptions of continuity
+    Only slight discontinuity between prediction and ground truth despite no explicit modelling assumptions of continuity
   \end{centering}
 \end{frame}
 
@@ -230,7 +229,20 @@
 \end{frame}
 
 \begin{frame}{Bayesian modelling}
-  Write down Bayes rule and a few stylized facts \ie rational when your prior is correct, but getting the correct prior crucial
+  \begin{block}{Bayes' rule}
+    \begin{equation*}
+      \mathbb{P}(\textrm{hypothesis}|\textrm{data}) = \frac{\mathbb{P}(\textrm{data}|\textrm{hypothesis})\mathbb{P}(\textrm{hypothesis})}{\mathbb{P}(\textrm{data})}
+    \end{equation*}
+  \end{block}
+  \begin{block}{}
+    \begin{itemize}
+      \item Bayes' rule follows from basic axioms of probability theory
+      \vspace{\baselineskip}
+      \item Provides a calculus to update beliefs in response to data
+      \vspace{\baselineskip}
+      \item Requires the specification of prior beliefs about data - choice of prior is crucial for successful modelling
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \begin{frame}{Prior on functions}

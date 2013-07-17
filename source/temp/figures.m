@@ -107,7 +107,9 @@ for i = 1:1
   plot (x_test + date_offset, historical_smooth((end-window-length(test)+1):end) + ...
                 smooth_difference((end-window-length(test)+1):end), 'g:', 'LineWidth', 6);
   plot (x_test + date_offset, prediction, 'r--', 'LineWidth', 2);
+  legend('True temperature', 'Historical smoothed temperature', 'Predicted smoothed temperature', 'Predicted temperature');
   xlim ([max(train_times) - 10 + date_offset, max(times) + date_offset]);
+  ylim([0,3]);
   xlabel('Time');
   ylabel('Temperature (T01 standardised)');
   datetick('x', 'dd mmm yyyy', 'keepticks');

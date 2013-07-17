@@ -229,10 +229,11 @@ for i = 1:1
 %         [AX,H1,H2] = plotyy(train_times, train_loads, all_times, all_temps(:,best_i), 'plot');
         hold on
 %         plot (train_times, av_prediction((length(test_times)+1):end), 'g');
+        plot (test_times + date_offset, av_prediction(1:length(test_times)), 'r--', 'LineWidth', 2);
+        legend('True load', 'GP prediction');
         if ~forecast
           plot (train_times((window+2):end) + date_offset, train_loads((window+2):end), 'k-', 'LineWidth', 2);
         end
-        plot (test_times + date_offset, av_prediction(1:length(test_times)), 'r--', 'LineWidth', 2);
         plot ([min(test_times) + date_offset, min(test_times) + date_offset], [-1, 3], 'k--');
         plot ([max(test_times) + date_offset, max(test_times) + date_offset], [-1, 3], 'k--');
         xlim ([times(start_index+1)-5 + date_offset, times(end_index-1)+5 + date_offset]);
@@ -250,6 +251,7 @@ for i = 1:1
         save2pdf ('load_pred.pdf', h, 600);
         h = figure;
         plot (all_times + date_offset, all_temps(:,best_i), 'k-', 'LineWidth', 2);
+        legend('Temperature');
         hold on;
         plot ([min(test_times) + date_offset, min(test_times) + date_offset], [1, -2.5], 'k--');
         plot ([max(test_times) + date_offset, max(test_times) + date_offset], [1, -2.5], 'k--');
@@ -315,10 +317,11 @@ hyp_opt = minimize(hyp, @gp, -100, @infExact, meanfunc, covfunc, likfunc, ...
 h = figure;
 plot (train_times(1:(window+1)) + date_offset, train_loads(1:(window+1)), 'k-', 'LineWidth', 2);
 hold on
+plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
+legend('True load', 'GP prediction');
 if ~forecast
   plot (train_times((window+2):end) + date_offset, train_loads((window+2):end), 'k-', 'LineWidth', 2);
 end
-plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
 plot ([min(test_times) + date_offset, min(test_times) + date_offset], [-1, 3], 'k--');
 plot ([max(test_times) + date_offset, max(test_times) + date_offset], [-1, 3], 'k--');
 xlim ([times(start_index+1)-5 + date_offset, times(end_index-1)+5 + date_offset]);
@@ -360,7 +363,7 @@ covfunc = {@covSum, {{@covMask, {[1, 0, 0], @covSEiso}}, {@covMask, {[0, 1, 0], 
 hyp.cov = [0;0;0;0;0;0];
 %covfunc = {@covSEard};
 %hyp.cov = [0;1;1;0];
-hyp_opt = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, ...
+hyp_opt = minimize(hyp, @gp, -100, @infExact, meanfunc, covfunc, likfunc, ...
                  x, y);
 
 [m, ~] = gp(hyp_opt, @infExact, meanfunc, covfunc, likfunc, x, y, [x_test ; x]);
@@ -368,10 +371,11 @@ hyp_opt = minimize(hyp, @gp, -500, @infExact, meanfunc, covfunc, likfunc, ...
 h = figure;
 plot (train_times(1:(window+1)) + date_offset, train_loads(1:(window+1)), 'k-', 'LineWidth', 2);
 hold on
+plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
+legend('True load', 'GP prediction');
 if ~forecast
   plot (train_times((window+2):end) + date_offset, train_loads((window+2):end), 'k-', 'LineWidth', 2);
 end
-plot (test_times + date_offset, m(1:length(test_times)), 'r--', 'LineWidth', 2);
 plot ([min(test_times) + date_offset, min(test_times) + date_offset], [-1, 3], 'k--');
 plot ([max(test_times) + date_offset, max(test_times) + date_offset], [-1, 3], 'k--');
 xlim ([times(start_index+1)-5 + date_offset, times(end_index-1)+5 + date_offset]);
