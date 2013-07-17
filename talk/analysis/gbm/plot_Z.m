@@ -6,8 +6,10 @@ Z = csvread('Z01_pred.csv');
 
 h = figure;
 set(h, 'Position', [0 0 800 400])
-plot (Z, 'b-', 'LineWidth', 2);
+plot (1:33, Z(1:33), 'b-', 'LineWidth', 2);
 hold on;
+plot (34:201, Z(34:201), 'r--', 'LineWidth', 2);
+plot (202:length(Z), Z(202:end), 'b-', 'LineWidth', 2);
 plot ([33.5, 33.5], [min(Z), max(Z)], 'k--');
 plot ([201.5, 201.5], [min(Z), max(Z)], 'k--');
 xlim ([1, length(Z)]);
