@@ -8,11 +8,14 @@
   \usefonttheme{serif}
   \setbeamertemplate{navigation symbols}{}
   % Show frame number and author name in footline
-  \setbeamertemplate{footline}[frame number]
-  \addtobeamertemplate{footline}{\quad\textcolor{gray}{James Lloyd}}{}
+  %\setbeamertemplate{footline}[frame number]
+  %\setbeamertemplate{headline}{\scriptsize{\vspace*{0.3cm}\hspace*{0.3cm}\insertframenumber}}
+  %\addtobeamertemplate{footline}{\quad\textcolor{gray}{James Lloyd}}{}
+  \addtobeamertemplate{frametitle}{\vskip1.5ex}{}
   % Set frame titles in small capitals
   \setbeamerfont{frametitle}{shape=\scshape,family=\rmfamily}
-  \setbeamercolor{frametitle}{bg=gray!60!white,fg=black}
+  %\setbeamercolor{frametitle}{bg=gray!60!white,fg=black}
+  \setbeamercolor{frametitle}{fg=black}
   % Alerted text: blue (uncomment second line if theme sets alerted text to bold)
   \setbeamercolor{alerted text}{fg=blue}
   %\setbeamerfont*{alerted text}{}

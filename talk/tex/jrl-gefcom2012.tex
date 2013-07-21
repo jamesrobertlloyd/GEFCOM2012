@@ -37,6 +37,8 @@
 \def\newarrow{\mbox{\begin{tikzpicture}
              \useasboundingbox{(-3pt,-4.5pt) rectangle (19pt,1pt)};
              \draw[->] (0,-0.07)--(17pt,-0.07);\end{tikzpicture}}}
+             
+\setbeamertemplate{background} {\includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{2010-PES-PPT-Template-v2007.pdf}}
 
 \title[] % (optional, use only with long paper titles)
 {GEFCom2012 Hierarchical load forecasting:\\Gradient boosting machines and Gaussian processes}
@@ -66,7 +68,7 @@
    every join/.style={->}
  }
 
-\tikzstyle{mybox} = [draw=white, rectangle]
+\tikzstyle{mybox} = [draw=none, rectangle]
 \usepackage{ifthen}
 \usepackage{booktabs}
 
@@ -93,9 +95,9 @@
 %\input{../include/defs}
 
 \begin{frame}
-  \begin{block}{}
+  %\begin{block}{}
     \titlepage
-  \end{block}
+  %\end{block}
   \begin{center}
     {\bf  Thanks to}\\
     Alex Davies\\
@@ -161,19 +163,22 @@
 
 \begin{frame}{Main approach - regression on time and temp.}
   \begin{block}{Modelling temperatures and loads as functions of time and temperature}
+    \vspace{-1\baselineskip}
     \begin{eqnarray*}
       T(t) & = & f(t, \bar{S}(t)) + \varepsilon^T_t \\
       \\
       Z(t) & = & g(t, T(t), S(t)) + \varepsilon^Z_t \\
     \end{eqnarray*}
+    \vspace{-2\baselineskip}
   \end{block}
   \begin{block}{\ie no explicit autoregressive components \eg}
+    \vspace{-1\baselineskip}
     \begin{eqnarray*}
       y(t+1) & = & f(y(t)) + \varepsilon_t
     \end{eqnarray*}
   \end{block}
   \begin{block}{Notation}
-    $t$ --- Time, $T$ --- Temperature, $S$ --- Kernel smoothed temperature $\bar{S}$ --- Historical average of smoothed temperature, $Z$ --- Load, $f,g$ --- Generic functions, $\varepsilon$ --- Generic error
+    $t$ --- Time, $T$ --- Temperature, $S$ --- Smoothed temperature $\bar{S}$ --- Historical average of smoothed temperature, $Z$ --- Load, $f,g$ --- Generic functions, $\varepsilon$ --- Generic error
   \end{block}
 \end{frame}
 
@@ -209,11 +214,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{GBM regression}
-  \begin{centering}
+\begin{frame}{GBM regression - example}
+  \vspace{-2\baselineskip}
+  \begin{center}
     \input{../include/gbm}
-    Only slight discontinuity between prediction and ground truth despite no explicit modelling assumptions of continuity
-  \end{centering}
+  \end{center}
+  \vspace{-1\baselineskip}
+  Only slight discontinuity between prediction and ground truth despite no explicit modelling assumptions of continuity
 \end{frame}
 
 \begin{frame}{Gaussian process regression}
@@ -246,9 +253,9 @@
 \end{frame}
 
 \begin{frame}{Prior on functions}
-  \begin{centering}
+  \begin{center}
     \input{../include/SE}
-  \end{centering}
+  \end{center}
 \end{frame}
 
 \begin{frame}{Conditional Posterior}
@@ -303,19 +310,25 @@
 \end{frame}
 
 \begin{frame}{A better prior}
-  \begin{itemize}
-    \item Used kernels of the form $\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t$
-    \item This encodes the assumption that Load = Smooth function of time + Smooth function of smoothed temperatures + Periodic function of time that varies smoothly over time and with changing temperature
-  \end{itemize}
-  \begin{centering}
+  %\begin{itemize}
+    %\item Used kernels of the form $\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t$
+    %\item
+  Used structured kernel to encode the assumption that
+  \begin{eqnarray*}
+    \textrm{Load} & = & \textrm{Smooth function of time} +  \\
+    & & \textrm{Smooth function of smoothed temperatures} + \\
+    & & \textrm{Daily periodicity smoothly changing with time and temperature}
+  \end{eqnarray*}
+  %\end{itemize}
+  \begin{center}
     \input{../include/structured_prior}
-  \end{centering}
+  \end{center}
 \end{frame}
 
 \begin{frame}{A better prior}
-  \begin{centering}
+  \begin{center}
     \input{../include/load_pred}
-  \end{centering}
+  \end{center}
 \end{frame}
 
 \begin{frame}{GP regression - parameter selection}
@@ -351,9 +364,14 @@
 \end{frame}
 
 \begin{frame}{Structured kernels for temp.\ forecasts}
-  \begin{itemize}
-    \item Assumed that Temperature = Smoothed historical average + Smooth long-term deviations + Daily periodicity
-  \end{itemize}
+  %\begin{itemize}
+  %  \item Assumed that Temperature = Smoothed historical average + Smooth long-term deviations + Daily periodicity
+  %\end{itemize}
+  \begin{eqnarray*}
+    \textrm{Temperature} & = & \textrm{Smooth historical average temperature} +  \\
+    & & \textrm{Smooth long-term deviations} + \\
+    & & \textrm{Daily periodicity}
+  \end{eqnarray*}
   \begin{center}
     \input{../include/temp_pred}
   \end{center}
@@ -379,7 +397,9 @@
         80 & 0 & 20 & 10 & 74,293 \\
         \ldots & \ldots & \ldots & \ldots & \ldots
       \end{tabular}
+      \vspace{-1\baselineskip}
     \end{center}
+      \vspace{-1\baselineskip}
   \end{block}
   \begin{block}{More principled methods}
     \begin{itemize}
