@@ -132,12 +132,12 @@
 \begin{frame}{Performance of Different Components}
   \begin{center}
     \begin{tabular}{lcc|ccc}
-      Method &&&&& Validation score\\\\
-      \hline\\
-      GBM &&&&& 72,968 \\\\
-      GP &&&&& 99,787 \\\\
-      LR &&&&& 112,547 \\\\
-      \hline\\
+      Method &&&&& Validation score\\&&&&&\\
+      \hline&&&&&\\
+      GBM &&&&& 72,968 \\&&&&&\\
+      GP &&&&& 99,787 \\&&&&&\\
+      LR &&&&& 112,547 \\&&&&&\\
+      \hline&&&&&\\
       Ensemble &&&&& 71,164
     \end{tabular}
   \end{center}
@@ -162,7 +162,7 @@
 \begin{frame}{Main approach - regression on time and temp.}
   \begin{block}{Modelling temperatures and loads as functions of time and temperature}
     \begin{eqnarray*}
-      T(t) & = & f(t) + \varepsilon^T_t \\
+      T(t) & = & f(t, \bar{S}(t)) + \varepsilon^T_t \\
       \\
       Z(t) & = & g(t, T(t), S(t)) + \varepsilon^Z_t \\
     \end{eqnarray*}
@@ -173,7 +173,7 @@
     \end{eqnarray*}
   \end{block}
   \begin{block}{Notation}
-    $t$ --- Time, $T$ --- Temperature, $S$ --- Kernel smoothed temperature, $Z$ --- Load, $f,g$ --- Generic functions, $\varepsilon$ --- Generic error
+    $t$ --- Time, $T$ --- Temperature, $S$ --- Kernel smoothed temperature $\bar{S}$ --- Historical average of smoothed temperature, $Z$ --- Load, $f,g$ --- Generic functions, $\varepsilon$ --- Generic error
   \end{block}
 \end{frame}
 
