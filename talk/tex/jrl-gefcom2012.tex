@@ -352,27 +352,27 @@
   \end{center}
 \end{frame}
 
-%\begin{frame}{GP regression - without periodicity}
-%    \begin{eqnarray*}
-%    \textrm{Load} & = & \textrm{Smooth function of time} +  \\
-%    & & \textrm{Smooth function of temperatures} + \\
-%    & & \textrm{Smooth function of smoothed temperatures}
-%  \end{eqnarray*}
-%  \begin{center}
-%    \input{../include/load_pred_SEard}
-%  \end{center}
-%\end{frame}
-%
-%\begin{frame}{GP regression - without structure}
-%  \vspace{-1\baselineskip}
-%    \begin{eqnarray*}
-%    \textrm{Load} & = & \textrm{Smooth function of time}
-%  \end{eqnarray*}
-%  \begin{center}
-%    \input{../include/load_pred_SE_small}
-%  \end{center}
-%  Suitable prior assumptions crucial when using any Bayesian method
-%\end{frame}
+\begin{frame}{Incorrect prior - no periodicity}
+    \begin{eqnarray*}
+    \textrm{Load} & = & \textrm{Smooth function of time} +  \\
+    & & \textrm{Smooth function of temperatures} + \\
+    & & \textrm{Smooth function of smoothed temperatures}
+  \end{eqnarray*}
+  \begin{center}
+    \input{../include/load_pred_SEard}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Incorrect prior - no structure}
+  \vspace{-1\baselineskip}
+    \begin{eqnarray*}
+    \textrm{Load} & = & \textrm{Smooth function of time}
+  \end{eqnarray*}
+  \begin{center}
+    \input{../include/load_pred_SE_small}
+  \end{center}
+  Suitable prior assumptions crucial when using any Bayesian method
+\end{frame}
 
 \begin{frame}{Structured kernels for temp.\ forecasts}
   %\begin{itemize}
