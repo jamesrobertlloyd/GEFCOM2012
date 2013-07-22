@@ -110,7 +110,7 @@
   \begin{block}{Preprocessing}
     %\vspace{\baselineskip}
     \begin{itemize}
-      \item Kernel smoothing of temperatures
+      \item Kernel smoothing of temperatures (to remove daily periodicity)
     \end{itemize}
   \end{block}
   \vspace{\baselineskip}
@@ -143,6 +143,10 @@
       Ensemble &&&&& 71,164
     \end{tabular}
   \end{center}
+  \begin{itemize}
+    \item GBM the best performing method
+    \item GP and LR sufficiently uncorrelated with GBM to provide useful components in ensemble
+  \end{itemize}
 \end{frame}
 
 %\begin{frame}{Notation}
