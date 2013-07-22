@@ -275,22 +275,29 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{Need more than just a smoothing device}
-  \begin{center}
-    \input{../include/fig_synth_extrap_bad.tex}
-  \end{center}
-\end{frame}
+%\begin{frame}{Need more than just a smoothing device}
+%  \begin{center}
+%    \input{../include/fig_synth_extrap_bad.tex}
+%  \end{center}
+%\end{frame}
 
-\begin{frame}{Need more than just a smoothing device}
-  \begin{center}
-    \input{../include/load_pred_SE}
-  \end{center}
-\end{frame}
+%\begin{frame}{Need more than just a smoothing device}
+%  \begin{center}
+%    \input{../include/load_pred_SE}
+%  \end{center}
+%\end{frame}
 
-\begin{frame}{Need more than just a smoothing device}
-  \begin{center}
-    \input{../include/load_pred_SEard}
-  \end{center}
+\begin{frame}{Encoding structural assumptions}
+  \begin{itemize}
+    \item Gaussian processes typically used as smoothing devices
+    \vspace{\baselineskip}
+    \item Daily and weekly periodicity assumptions could be encoded by feature engineering as with GBM
+    \vspace{\baselineskip}
+    \item However, structural assumptions can also be encoded in the \emph{kernel} of a GP
+    \begin{itemize}
+      \item Using a different method allows predictions to be uncorrelated - very useful for ensembling
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Can encode structural assumptions in kernel}
@@ -301,7 +308,6 @@
   \input{../include/tables/simple_kernels_table_v3}
 \end{frame}
 
-
 \begin{frame}{Kernels can be composed}
   \begin{itemize} 
 	\item Two main operations: adding, multiplying
@@ -309,7 +315,13 @@
   \input{../include/tables/comp1}
 \end{frame}
 
-\begin{frame}{A better prior}
+%\begin{frame}{Need more than just a smoothing device}
+%  \begin{center}
+%    \input{../include/load_pred_SEard}
+%  \end{center}
+%\end{frame}
+
+\begin{frame}{A suitable prior}
   %\begin{itemize}
     %\item Used kernels of the form $\SE_t + \SE_S + \SE_t \times \SE_T \times \Per_t$
     %\item
@@ -325,9 +337,50 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{A better prior}
+\begin{frame}{GP regression - example}
+    \begin{eqnarray*}
+    \textrm{Load} & = & \textrm{Smooth function of time} +  \\
+    & & \textrm{Smooth function of smoothed temperatures} + \\
+    & & \textrm{Daily periodicity smoothly changing with time and temperature}
+  \end{eqnarray*}
   \begin{center}
     \input{../include/load_pred}
+  \end{center}
+\end{frame}
+
+%\begin{frame}{GP regression - without periodicity}
+%    \begin{eqnarray*}
+%    \textrm{Load} & = & \textrm{Smooth function of time} +  \\
+%    & & \textrm{Smooth function of temperatures} + \\
+%    & & \textrm{Smooth function of smoothed temperatures}
+%  \end{eqnarray*}
+%  \begin{center}
+%    \input{../include/load_pred_SEard}
+%  \end{center}
+%\end{frame}
+%
+%\begin{frame}{GP regression - without structure}
+%  \vspace{-1\baselineskip}
+%    \begin{eqnarray*}
+%    \textrm{Load} & = & \textrm{Smooth function of time}
+%  \end{eqnarray*}
+%  \begin{center}
+%    \input{../include/load_pred_SE_small}
+%  \end{center}
+%  Suitable prior assumptions crucial when using any Bayesian method
+%\end{frame}
+
+\begin{frame}{Structured kernels for temp.\ forecasts}
+  %\begin{itemize}
+  %  \item Assumed that Temperature = Smoothed historical average + Smooth long-term deviations + Daily periodicity
+  %\end{itemize}
+  \begin{eqnarray*}
+    \textrm{Temperature} & = & \textrm{Smooth historical average temperature} +  \\
+    & & \textrm{Smooth long-term deviations} + \\
+    & & \textrm{Daily periodicity}
+  \end{eqnarray*}
+  \begin{center}
+    \input{../include/temp_pred}
   \end{center}
 \end{frame}
 
@@ -338,7 +391,7 @@
     \item Marginal likelihood optimisation can fail
     \begin{itemize}
       \item Can result in slight over fitting
-      \item When the prior and data generation process are very dissimilar, Bayesian inference can give misleading results
+      \item When the prior and data generation process are dissimilar, Bayesian inference can give misleading results
     \end{itemize}
     \vspace{\baselineskip}
     \item In practice, parameter selection was a mixture of marginal likelihood optimisation, validation score maximisation and model checking (plotting graphs)
@@ -361,20 +414,6 @@
 \includegraphics[width=0.32\textwidth]{figures/monthly-canadian-total-unemploym/monthly-canadian-total-unemploym_all} & 
 \includegraphics[width=0.32\textwidth]{figures/monthly-sales-of-us-houses-thous/monthly-sales-of-us-houses-thous_all}
   \end{tabular}
-\end{frame}
-
-\begin{frame}{Structured kernels for temp.\ forecasts}
-  %\begin{itemize}
-  %  \item Assumed that Temperature = Smoothed historical average + Smooth long-term deviations + Daily periodicity
-  %\end{itemize}
-  \begin{eqnarray*}
-    \textrm{Temperature} & = & \textrm{Smooth historical average temperature} +  \\
-    & & \textrm{Smooth long-term deviations} + \\
-    & & \textrm{Daily periodicity}
-  \end{eqnarray*}
-  \begin{center}
-    \input{../include/temp_pred}
-  \end{center}
 \end{frame}
 
 \begin{frame}{Ensembling}
